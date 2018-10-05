@@ -190,7 +190,7 @@ LRESULT CPfaMainSheet::OnWMSplashInitDone(WPARAM wParam, LPARAM lParam)
 	CString strTitle;
 	
 #ifdef _DEBUG
-	strTitle.Format(_T("Project File Assembler (Debug Build) V%s"), STRFILEVER);
+	strTitle.Format(_T("Project File Assembler (Debug Build) V%s"), static_cast<LPCTSTR>(CA2CT(STRFILEVER)));
 #else
 	strTitle.Format(_T("Project File Assembler (Release Build) V%s"), STRFILEVER);
 #endif
