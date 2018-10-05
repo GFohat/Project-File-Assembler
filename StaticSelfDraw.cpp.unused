@@ -1,0 +1,75 @@
+// StaticSelfDraw.cpp : implementation file
+//
+
+#include "stdafx.h"
+#include "project file assembler.h"
+#include "StaticSelfDraw.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+// CStaticSelfDraw
+
+CStaticSelfDraw::CStaticSelfDraw()
+{
+}
+
+CStaticSelfDraw::~CStaticSelfDraw()
+{
+}
+
+
+BEGIN_MESSAGE_MAP(CStaticSelfDraw, CStatic)
+	//{{AFX_MSG_MAP(CStaticSelfDraw)
+	//}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+/////////////////////////////////////////////////////////////////////////////
+// CStaticSelfDraw message handlers
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	03/05/2007 10:28:25
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+//void CStaticSelfDraw::OnDrawItem(int nIDCtl, LPDRAWITEMSTRUCT lpDrawItemStruct) 
+//{
+//	// TODO: Add your message handler code here and/or call default
+//	
+//	CStatic::OnDrawItem(nIDCtl, lpDrawItemStruct);
+//}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	03/05/2007 10:46:30
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+//BOOL CStaticSelfDraw::PreCreateWindow(CREATESTRUCT& cs) 
+//{
+//	//OWNERDRAWVARIABLE ?
+//	//cs.style |= ;
+//	
+//	return CStatic::PreCreateWindow(cs);
+//}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	03/05/2007 10:48:43
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+//BOOL CStaticSelfDraw::Create(LPCTSTR lpszClassName, LPCTSTR lpszWindowName, DWORD dwStyle, const RECT& rect, CWnd* pParentWnd, UINT nID, CCreateContext* pContext) 
+//{
+//	// TODO: Add your specialized code here and/or call the base class
+//	
+//	return CWnd::Create(lpszClassName, lpszWindowName, dwStyle, rect, pParentWnd, nID, pContext);
+//}

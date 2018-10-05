@@ -1,0 +1,739 @@
+//Microsoft Developer Studio generated resource script.
+//
+#include "resource.h"
+
+#define APSTUDIO_READONLY_SYMBOLS
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 2 resource.
+//
+#include "afxres.h"
+
+/////////////////////////////////////////////////////////////////////////////
+#undef APSTUDIO_READONLY_SYMBOLS
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.S.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_US
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_ABOUTBOX DIALOG DISCARDABLE  0, 0, 235, 55
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "About Project File Assembler"
+FONT 8, "MS Sans Serif"
+BEGIN
+    ICON            IDR_MAINFRAME,IDC_STATIC,11,17,20,20
+    LTEXT           "Project File Assembler Version 1.0",IDC_STATIC,40,10,
+                    119,8,SS_NOPREFIX
+    LTEXT           "Copyright (C) 2005",IDC_STATIC,40,25,119,8
+    DEFPUSHBUTTON   "OK",IDOK,178,7,50,14,WS_GROUP
+END
+
+IDD_PROJECTFILEASSEMBLER_DIALOG DIALOGEX 0, 0, 657, 384
+STYLE DS_MODALFRAME | WS_POPUP | WS_VISIBLE | WS_CAPTION
+EXSTYLE WS_EX_APPWINDOW
+CAPTION "Project File Assembler"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    CONTROL         "List1",IDC_LIST1,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | WS_BORDER | 
+                    WS_TABSTOP,24,61,606,209
+    PUSHBUTTON      "Copy Files",IDC_BUTTON1,25,330,100,35
+    CONTROL         "Create destination directory",IDC_CHECK1,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,135,330,165,14
+    PUSHBUTTON      "Browse for CSV",IDC_BUTTON3,31,27,100,18
+    LTEXT           "",IDC_LBL_FILEPATH,190,30,435,15,0,WS_EX_STATICEDGE
+    GROUPBOX        "",IDC_STATIC,10,7,635,368
+    LTEXT           "Listing File:",IDC_STATIC,147,30,36,10
+    CONTROL         "Clear destination directory",IDC_CHECK2,"Button",
+                    BS_AUTOCHECKBOX | WS_TABSTOP,135,350,165,14
+    PUSHBUTTON      "Build listing .csv",IDC_BTN_BUILD_LISTNG,530,350,100,15
+    CONTROL         "Progress1",IDC_PROGRESS_ASSEMBLER,"msctls_progress32",
+                    PBS_SMOOTH | WS_BORDER,25,305,605,15
+    CONTROL         "Progress1",IDC_PROGRESS_FILE,"msctls_progress32",
+                    PBS_SMOOTH | WS_BORDER,25,285,605,15
+    PUSHBUTTON      "Quick Help",IDC_BN_QUICK_HELP,530,330,100,15
+END
+
+IDD_PAGE_BATCH_FILES DIALOG DISCARDABLE  0, 0, 737, 454
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Batch Files"
+FONT 8, "MS Sans Serif"
+BEGIN
+    EDITTEXT        IDC_ED_CUR_BATFILE,25,25,650,15,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    GROUPBOX        "File To Run",IDC_STATIC,10,10,715,40
+    PUSHBUTTON      "GO",IDC_BN_RUN_BATFILE,685,25,25,15
+    EDITTEXT        IDC_ED_CUR_RESULTSFILE,26,76,649,15,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    GROUPBOX        "Results File",IDC_STATIC,10,60,715,40
+    PUSHBUTTON      "GO",IDC_BN_OPEN_RSLTS,685,75,25,15
+    CONTROL         "",IDC_RED_RECV,"RICHEDIT",ES_MULTILINE | ES_AUTOVSCROLL | 
+                    ES_NOHIDESEL | ES_READONLY | WS_BORDER | WS_VSCROLL | 
+                    WS_TABSTOP,10,255,715,185
+    PUSHBUTTON      "Test Pipe",IDC_BN_TEST_PIPE,400,105,110,15
+    CONTROL         "List1",IDC_LCTRL_BATFILES,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | WS_BORDER | 
+                    WS_TABSTOP,10,110,295,135
+    CONTROL         "",IDC_RED_BATCH_CONTENTS,"RICHEDIT",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_READONLY | WS_BORDER | WS_VSCROLL | 
+                    WS_TABSTOP,315,130,410,115
+END
+
+IDD_PAGE_INSTALLSHIELD DIALOG DISCARDABLE  0, 0, 737, 454
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "InstallShield"
+FONT 8, "MS Sans Serif"
+BEGIN
+    GROUPBOX        "Version",IDC_STATIC,10,10,230,50
+    CONTROL         "InstallShield 10.5",IDC_RDO_IS_10,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,25,25,95,20
+    CONTROL         "InstallShield 12",IDC_RDO_IS_12,"Button",
+                    BS_AUTORADIOBUTTON | BS_PUSHLIKE,125,25,95,20
+    PUSHBUTTON      "Launch",IDC_BN_LAUNCH_IS,630,45,95,20
+    PUSHBUTTON      "Explore",IDC_BN_EXPLORE,630,290,95,20
+    CONTROL         "List1",IDC_LCTRL_IS_PROJECTS,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | WS_BORDER | 
+                    WS_TABSTOP,10,70,715,195
+    CONTROL         "List1",IDC_LCTRL_IS_MEDIA,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | WS_BORDER | 
+                    WS_TABSTOP,10,315,715,126
+END
+
+IDD_PAGE_PFA_DATA DIALOG DISCARDABLE  0, 0, 737, 454
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "PFA Data"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "List1",IDC_LST_PROJECT_ITEMS,"SysListView32",LVS_REPORT | 
+                    WS_BORDER | WS_TABSTOP,10,80,715,310
+    CONTROL         "Progress1",IDC_PRGRS_BATCH,"msctls_progress32",
+                    WS_BORDER,10,435,715,10
+    CONTROL         "Progress1",IDC_PRGRS_FILE,"msctls_progress32",
+                    PBS_SMOOTH | WS_BORDER,10,420,715,10
+    EDITTEXT        IDC_ED_DFLT_SRC_DIR,115,35,575,12,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    EDITTEXT        IDC_ED_DFLT_DEST_DIR,115,55,575,12,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    PUSHBUTTON      "...",IDC_BN_BROWSE_DFLT_SRC_DIR,700,35,20,15
+    PUSHBUTTON      "...",IDC_BN_BROWSE_DFLT_DEST_DIR,700,55,20,15
+    CONTROL         "Lock",IDC_CHK_LOCK,"Button",BS_AUTOCHECKBOX | 
+                    BS_PUSHLIKE | WS_TABSTOP,580,395,145,20
+    LTEXT           "Default Source:",IDC_STATIC_DFLT_SRC,10,35,95,15
+    LTEXT           "Default Destination:",IDC_STATIC_DFLT_DEST,10,55,95,15
+    PUSHBUTTON      "Export CSV",IDC_BN_EXPORT_CSV,10,395,145,20
+    EDITTEXT        IDC_ED_CUR_PROJECT,10,5,300,20,ES_CENTER | 
+                    ES_AUTOHSCROLL | ES_READONLY
+    PUSHBUTTON      "Export CSV (Ticked)",IDC_BN_EXPORT_CSV_TICKED,170,395,
+                    145,20
+    EDITTEXT        IDC_ED_ROW_COUNT,315,5,65,20,ES_CENTER | ES_AUTOHSCROLL | 
+                    ES_READONLY
+    PUSHBUTTON      "Tick All",IDC_BN_SEL_ALL,390,5,75,20
+    PUSHBUTTON      "Tick None",IDC_BN_SEL_NONE,475,5,75,20
+    PUSHBUTTON      "Tick Invert",IDC_BN_SEL_INVERT,560,5,75,20
+    PUSHBUTTON      "Tick Highlighted",IDC_BN_SEL_HIGHLIGHTED,645,5,75,20
+    PUSHBUTTON      "Refresh",IDC_BN_REFRESH,385,395,145,20
+END
+
+IDD_PAGE_STEP_TYPE DIALOG DISCARDABLE  0, 0, 235, 156
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Step Type"
+FONT 8, "MS Sans Serif"
+BEGIN
+    COMBOBOX        IDC_CMBO_STEP_TYPE,50,60,125,90,CBS_DROPDOWNLIST | 
+                    CBS_SORT | WS_DISABLED | WS_VSCROLL | WS_TABSTOP
+END
+
+IDD_PAGE_STEP_DETAILS DIALOG DISCARDABLE  0, 0, 542, 250
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Step Details"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "",IDC_RED_TEXT_SRCFILE,"RICHEDIT",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | WS_BORDER | WS_TABSTOP,135,75,360,35
+    EDITTEXT        IDC_ED_LABEL_SRCFILE,15,75,110,12,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    CONTROL         "",IDC_RED_TEXT_SOURCEDIR,"RICHEDIT",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | WS_BORDER | WS_TABSTOP,135,120,360,35
+    EDITTEXT        IDC_ED_LABEL_SOURCEDIR,15,120,110,12,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    CONTROL         "",IDC_RED_TEXT_DESTDIR,"RICHEDIT",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | WS_BORDER | WS_TABSTOP,135,165,360,35
+    EDITTEXT        IDC_ED_LABEL_DESTDIR,15,165,110,12,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    CONTROL         "",IDC_RED_TEXT_DESTFILE,"RICHEDIT",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | WS_BORDER | WS_TABSTOP,135,210,360,35
+    EDITTEXT        IDC_ED_LABEL_DESTFILE,15,210,110,12,ES_AUTOHSCROLL | 
+                    ES_READONLY
+    PUSHBUTTON      "File",IDC_BN_SRC_FILE,500,85,34,15
+    PUSHBUTTON      "Dir",IDC_BN_SRC_DIR,500,120,34,15
+    PUSHBUTTON      "Dir",IDC_BN_DEST_DIR,500,165,34,15
+    PUSHBUTTON      "File",IDC_BN_DEST_FILE,500,220,34,15,WS_DISABLED
+    COMBOBOX        IDC_CMBO_STEP_TYPE,139,30,230,90,CBS_DROPDOWNLIST | 
+                    CBS_SORT | WS_VSCROLL | WS_TABSTOP
+    GROUPBOX        "Step Type",IDC_STATIC,109,10,290,45
+    PUSHBUTTON      "Default",IDC_BN_SRC_DIR_DEFAULT,500,140,34,15
+    PUSHBUTTON      "Default",IDC_BN_DEST_DIR_DEFAULT,500,185,34,15
+END
+
+IDD_PAGE_OPTIONS DIALOG DISCARDABLE  0, 0, 737, 454
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Options"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "",IDC_AXSIMPLEDATAGRIDCTRL1,
+                    "{FE10BF68-B99D-4982-A1EC-067C00FFDDA2}",WS_TABSTOP,5,10,
+                    725,415
+END
+
+IDD_PAGE_DATA_PROPS DIALOG DISCARDABLE  0, 0, 737, 454
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Data Properties"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "List1",IDC_LIST_DATA_PROPS,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | WS_BORDER | 
+                    WS_TABSTOP,15,15,705,430
+END
+
+IDD_PAGE_LOGGING DIALOG DISCARDABLE  0, 0, 737, 454
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Logs"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "List1",IDC_LIST_LOG,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | LVS_OWNERDATA | 
+                    WS_BORDER | WS_TABSTOP,5,120,725,325
+    CONTROL         "List1",IDC_LIST_CATEGORIES,"SysListView32",LVS_REPORT | 
+                    LVS_SHOWSELALWAYS | WS_BORDER | WS_TABSTOP,5,5,120,105
+    CONTROL         "",IDC_RED_LOG_TEXT,"RICHEDIT",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_NOHIDESEL | ES_READONLY | WS_BORDER | 
+                    WS_VSCROLL | WS_TABSTOP,135,35,595,35
+    CONTROL         "",IDC_RED_LOG_SOURCE,"RICHEDIT",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_NOHIDESEL | ES_READONLY | WS_BORDER | 
+                    WS_VSCROLL | WS_TABSTOP,135,5,595,25
+    CONTROL         "",IDC_RED_LOG_SQL,"RICHEDIT",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_NOHIDESEL | ES_READONLY | WS_BORDER | 
+                    WS_VSCROLL | WS_TABSTOP,135,75,595,35
+END
+
+IDD_PAGE_LOGGING_ADO DIALOG DISCARDABLE  0, 0, 737, 450
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Property Page"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "List1",IDC_LIST_LOG,"SysListView32",LVS_REPORT | 
+                    LVS_SINGLESEL | LVS_SHOWSELALWAYS | WS_BORDER | 
+                    WS_TABSTOP,5,120,725,325
+    CONTROL         "List1",IDC_LIST_CATEGORIES,"SysListView32",LVS_REPORT | 
+                    LVS_SHOWSELALWAYS | WS_BORDER | WS_TABSTOP,5,5,120,105
+    CONTROL         "",IDC_RED_LOG_TEXT,"RICHEDIT",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_NOHIDESEL | ES_READONLY | WS_BORDER | 
+                    WS_VSCROLL | WS_TABSTOP,135,35,595,35
+    CONTROL         "",IDC_RED_LOG_SOURCE,"RICHEDIT",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_NOHIDESEL | ES_READONLY | WS_BORDER | 
+                    WS_VSCROLL | WS_TABSTOP,135,5,595,25
+    CONTROL         "",IDC_RED_LOG_SQL,"RICHEDIT",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_NOHIDESEL | ES_READONLY | WS_BORDER | 
+                    WS_VSCROLL | WS_TABSTOP,135,75,595,35
+END
+
+IDD_PAGE_DATA DIALOG DISCARDABLE  0, 0, 737, 454
+STYLE WS_CHILD | WS_DISABLED | WS_CAPTION
+CAPTION "Data"
+FONT 8, "MS Sans Serif"
+BEGIN
+    CONTROL         "",IDC_AXSIMPLEDATAGRIDCTRL1,
+                    "{FE10BF68-B99D-4982-A1EC-067C00FFDDA2}",WS_TABSTOP,5,20,
+                    725,375
+    EDITTEXT        IDC_ED_CLICKED,5,400,725,50,ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_READONLY | WS_VSCROLL
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_ABOUTBOX, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 48
+    END
+
+    IDD_PROJECTFILEASSEMBLER_DIALOG, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 650
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 377
+    END
+
+    IDD_PAGE_BATCH_FILES, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 730
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 447
+    END
+
+    IDD_PAGE_INSTALLSHIELD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 730
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 447
+    END
+
+    IDD_PAGE_PFA_DATA, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 730
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 447
+    END
+
+    IDD_PAGE_STEP_TYPE, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 228
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 149
+    END
+
+    IDD_PAGE_STEP_DETAILS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 535
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 243
+    END
+
+    IDD_PAGE_OPTIONS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 730
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 447
+    END
+
+    IDD_PAGE_DATA_PROPS, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 730
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 447
+    END
+
+    IDD_PAGE_LOGGING, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 730
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 447
+    END
+
+    IDD_PAGE_LOGGING_ADO, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 730
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 443
+    END
+
+    IDD_PAGE_DATA, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 730
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 447
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// REGISTRY
+//
+
+IDR_PROJECTFILEASSEMBLER REGISTRY DISCARDABLE    "Project File Assembler.rgs"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog Info
+//
+
+IDD_PAGE_OPTIONS DLGINIT
+BEGIN
+    IDC_AXSIMPLEDATAGRIDCTRL1, 0x376, 20, 0
+0x0000, 0x0000, 0x0000, 0x0001, 0x7073, 0x0000, 0x45a9, 0x0000, 0x0000, 
+0x0000, 
+    0
+END
+
+IDD_PAGE_DATA DLGINIT
+BEGIN
+    IDC_AXSIMPLEDATAGRIDCTRL1, 0x376, 20, 0
+0x0000, 0x0000, 0x0000, 0x0001, 0x7073, 0x0000, 0x3ef1, 0x0000, 0x0000, 
+0x0000, 
+    0
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// String Table
+//
+
+STRINGTABLE DISCARDABLE 
+BEGIN
+    IDS_ABOUTBOX            "&About Project File Assembler..."
+END
+
+#endif    // English (U.S.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+/////////////////////////////////////////////////////////////////////////////
+// English (U.K.) resources
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENG)
+#ifdef _WIN32
+LANGUAGE LANG_ENGLISH, SUBLANG_ENGLISH_UK
+#pragma code_page(1252)
+#endif //_WIN32
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Dialog
+//
+
+IDD_DIALOG_BUILD DIALOGEX 0, 0, 555, 387
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Dialog"
+FONT 8, "MS Sans Serif", 0, 0, 0x1
+BEGIN
+    DEFPUSHBUTTON   "Exit",IDOK,414,358,96,16
+    CONTROL         "List1",IDC_LIST1,"SysListView32",LVS_REPORT | 
+                    LVS_SHOWSELALWAYS | WS_BORDER | WS_TABSTOP,23,170,501,
+                    170
+    PUSHBUTTON      "Source Directory",IDC_BTN_SOURCE,45,110,100,16
+    PUSHBUTTON      "Destination Directory",IDC_BTN_DEST_DIR,45,129,100,16
+    LTEXT           "Select the path and name of the .csv file you wish the listing to be saved in.\nSelect the source and destination directories. The source directory must already exist with the files you want to copy.",
+                    IDC_STATIC,46,25,444,18
+    EDITTEXT        IDC_EDIT_SOURCEDIR,168,110,317,16,ES_AUTOHSCROLL
+    EDITTEXT        IDC_EDIT_DEST_DIR,168,129,317,16,ES_AUTOHSCROLL
+    PUSHBUTTON      "File Name",IDC_BTN_FILE_NAME,45,91,100,16
+    LTEXT           "",IDC_LBL_FILE_NAME,168,93,317,16,0,WS_EX_CLIENTEDGE
+    GROUPBOX        "",IDC_STATIC,23,7,501,155
+    GROUPBOX        "",IDC_STATIC,34,16,481,59
+    GROUPBOX        "",IDC_STATIC,34,81,481,73,0,WS_EX_DLGMODALFRAME
+    GROUPBOX        "",IDC_STATIC,23,348,501,32,0,WS_EX_DLGMODALFRAME
+    PUSHBUTTON      "Build List",IDC_BTN_BUILD_LIST,291,358,96,16
+    PUSHBUTTON      "Check All",IDC_BTN_CHECK_ALL,168,358,96,16
+    PUSHBUTTON      "Scan Directory",IDC_BTN_SCAN_DIR,45,358,96,16
+    LTEXT           "If no destination directory is selected this field is left blank in the csv file.\nClick Scan directory and select the files you want to copy from the list.\nClick Build List to create the csv file",
+                    IDC_STATIC,46,42,426,27
+END
+
+IDD_DLG_HELP DIALOG DISCARDABLE  0, 0, 447, 269
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Quick Help"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,196,240,55,20
+    CONTROL         "",IDC_RED_HELPTEXT,"RICHEDIT",ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_NOHIDESEL | ES_READONLY | WS_BORDER | 
+                    WS_VSCROLL | WS_TABSTOP,10,10,425,215
+END
+
+IDD_DLG_STRING_REQUESTER DIALOG DISCARDABLE  0, 0, 332, 165
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,10,120,110,15
+    PUSHBUTTON      "Cancel",IDCANCEL,215,120,110,15
+    EDITTEXT        IDC_ED_TEXT,20,75,295,15,ES_CENTER | ES_AUTOHSCROLL
+    GROUPBOX        "Value",IDC_STATIC,10,60,315,40
+    PUSHBUTTON      "Browse Dir",IDC_BN_BROWSE_DIR,130,120,75,15
+    EDITTEXT        IDC_ED_PROMPT,10,10,310,40,ES_CENTER | ES_MULTILINE | 
+                    ES_AUTOVSCROLL | ES_READONLY | NOT WS_BORDER
+END
+
+IDD_DLG_ADD_FILES DIALOG DISCARDABLE  0, 0, 677, 354
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Add Files"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,10,315,150,25
+    PUSHBUTTON      "Cancel",IDCANCEL,510,315,155,25
+    CONTROL         "List1",IDC_LIST_CUR_FILES,"SysListView32",LVS_REPORT | 
+                    LVS_SHOWSELALWAYS | WS_BORDER | WS_TABSTOP,10,85,655,220
+    EDITTEXT        IDC_ED_CUR_DIR,20,25,570,15,ES_AUTOHSCROLL
+    PUSHBUTTON      "Browse",IDC_BN_BROWSE,600,25,50,15
+    PUSHBUTTON      "Tick All",IDC_BN_SEL_ALL,154,55,70,20
+    PUSHBUTTON      "Tick None",IDC_BN_SEL_NONE,254,55,70,20
+    PUSHBUTTON      "Tick Invert",IDC_BN_SEL_INVERT,354,55,70,20
+    GROUPBOX        "Root Source Directory",IDC_STATIC,10,10,655,40
+    PUSHBUTTON      "Tick Highlighted",IDC_BN_SEL_HIGHLIGHTED,454,55,70,20
+END
+
+IDD_DLG_OPEN_PROJECT DIALOG DISCARDABLE  0, 0, 407, 219
+STYLE DS_MODALFRAME | WS_POPUP | WS_CAPTION | WS_SYSMENU
+CAPTION "Open a Project"
+FONT 8, "MS Sans Serif"
+BEGIN
+    DEFPUSHBUTTON   "OK",IDOK,10,195,110,15
+    PUSHBUTTON      "Cancel",IDCANCEL,280,195,110,15
+    CONTROL         "List1",IDC_LIST_EXIST_PROJECTS,"SysListView32",
+                    LVS_REPORT | LVS_SINGLESEL | LVS_SHOWSELALWAYS | 
+                    WS_BORDER | WS_TABSTOP,10,10,385,175
+END
+
+IDD_DLG_SPLASH DIALOG DISCARDABLE  0, 0, 260, 115
+STYLE DS_3DLOOK | WS_POPUP | WS_BORDER
+FONT 8, "MS Sans Serif"
+BEGIN
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// DESIGNINFO
+//
+
+#ifdef APSTUDIO_INVOKED
+GUIDELINES DESIGNINFO DISCARDABLE 
+BEGIN
+    IDD_DIALOG_BUILD, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 548
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 380
+    END
+
+    IDD_DLG_HELP, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 440
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 262
+    END
+
+    IDD_DLG_STRING_REQUESTER, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 325
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 158
+    END
+
+    IDD_DLG_ADD_FILES, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 670
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 347
+    END
+
+    IDD_DLG_OPEN_PROJECT, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 400
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 212
+    END
+
+    IDD_DLG_SPLASH, DIALOG
+    BEGIN
+        LEFTMARGIN, 7
+        RIGHTMARGIN, 253
+        TOPMARGIN, 7
+        BOTTOMMARGIN, 108
+    END
+END
+#endif    // APSTUDIO_INVOKED
+
+
+#ifdef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// TEXTINCLUDE
+//
+
+1 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "resource.h\0"
+END
+
+2 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#include ""afxres.h""\r\n"
+    "\0"
+END
+
+3 TEXTINCLUDE DISCARDABLE 
+BEGIN
+    "#define _AFX_NO_SPLITTER_RESOURCES\r\n"
+    "#define _AFX_NO_OLE_RESOURCES\r\n"
+    "#define _AFX_NO_TRACKER_RESOURCES\r\n"
+    "#define _AFX_NO_PROPERTY_RESOURCES\r\n"
+    "\r\n"
+    "#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)\r\n"
+    "#ifdef _WIN32\r\n"
+    "LANGUAGE 9, 1\r\n"
+    "#pragma code_page(1252)\r\n"
+    "#endif //_WIN32\r\n"
+    "#include ""res\\Project File Assembler.rc2""  // non-Microsoft Visual C++ edited resources\r\n"
+    "#include ""afxres.rc""         // Standard components\r\n"
+    "#endif\r\n"
+    "\0"
+END
+
+#endif    // APSTUDIO_INVOKED
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Icon
+//
+
+// Icon with lowest ID value placed first to ensure application icon
+// remains consistent on all systems.
+IDR_MAINFRAME           ICON    DISCARDABLE     "res\\Project File Assembler.ico"
+IDI_ICON_SUCCESS        ICON    DISCARDABLE     "res\\icon_success.ico"
+IDI_ICON_WARNING        ICON    DISCARDABLE     "res\\icon_warning.ico"
+IDI_ICON_FAILURE        ICON    DISCARDABLE     "res\\icon_failure.ico"
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Menu
+//
+
+IDR_MNU_CTXT_PFADATA MENU DISCARDABLE 
+BEGIN
+    POPUP "CTXT"
+    BEGIN
+        MENUITEM "Add Step",                    ID_CTXT_ADDASTEP
+        MENUITEM "Edit Step",                   ID_CTXT_EDITASTEP
+        MENUITEM "Copy Step",                   ID_CTXT_COPYASTEP
+        MENUITEM "Delete Step",                 ID_CTXT_DELETEASTEP
+        MENUITEM SEPARATOR
+        MENUITEM "Add Single Files",            ID_CTXT_ADDSINGLEFILES
+        MENUITEM SEPARATOR
+        MENUITEM "Reordinate",                  ID_CTXT_REORDINATE
+        MENUITEM SEPARATOR
+        MENUITEM "Explore Source",              ID_CTXT_EXPLORESOURCE
+        MENUITEM "Explore Destination",         ID_CTXT_EXPLOREDESTINATION
+    END
+END
+
+IDR_MNU_PROJECT MENU DISCARDABLE 
+BEGIN
+    POPUP "Project"
+    BEGIN
+        MENUITEM "New",                         ID_PROJECT_NEW
+        MENUITEM "Open",                        ID_PROJECT_OPEN
+        MENUITEM "Save As",                     ID_PROJECT_SAVEAS
+        MENUITEM "Delete",                      ID_PROJECT_DELETE
+    END
+END
+
+IDR_MNU_ACTION MENU DISCARDABLE 
+BEGIN
+    POPUP "Action"
+    BEGIN
+        MENUITEM "Validate Project",            ID_ACTION_VALIDATEPROJECT
+        MENUITEM "Copy Project Files",          ID_ACTION_COPYPROJECTFILES
+    END
+END
+
+IDR_MNU_PPAGE_DATA MENU DISCARDABLE 
+BEGIN
+    POPUP "File"
+    BEGIN
+        MENUITEM "Exit",                        ID_FILE_EXIT
+    END
+    POPUP "Project"
+    BEGIN
+        MENUITEM "New",                         ID_PROJECT_NEW
+        MENUITEM "Open",                        ID_PROJECT_OPEN
+        MENUITEM "Save As",                     ID_PROJECT_SAVEAS
+        MENUITEM "Delete",                      ID_PROJECT_DELETE
+        MENUITEM SEPARATOR
+        POPUP "Archive"
+        BEGIN
+            MENUITEM "Export",                      ID_PROJECT_ARCHIVE_EXPORT
+
+            MENUITEM "Import",                      ID_PROJECT_ARCHIVE_IMPORT
+
+        END
+    END
+    POPUP "Action"
+    BEGIN
+        MENUITEM "Validate Project",            ID_ACTION_VALIDATEPROJECT
+        MENUITEM "Copy Project Files",          ID_ACTION_COPYPROJECTFILES
+    END
+END
+
+IDR_MNU_MINIMAL MENU DISCARDABLE 
+BEGIN
+    POPUP "File"
+    BEGIN
+        MENUITEM "Exit",                        ID_FILE_EXIT
+    END
+END
+
+
+/////////////////////////////////////////////////////////////////////////////
+//
+// Bitmap
+//
+
+IDB_BITMAP1             BITMAP  DISCARDABLE     "res\\bitmap1.bmp"
+IDB_BMP_AAH_LOGO_OLD    BITMAP  DISCARDABLE     "Graphics\\aah logo - banner 2.bmp"
+IDB_BMP_AAH_LOGO_NEW    BITMAP  DISCARDABLE     "graphics\\bitmap3.bmp"
+#endif    // English (U.K.) resources
+/////////////////////////////////////////////////////////////////////////////
+
+
+
+#ifndef APSTUDIO_INVOKED
+/////////////////////////////////////////////////////////////////////////////
+//
+// Generated from the TEXTINCLUDE 3 resource.
+//
+#define _AFX_NO_SPLITTER_RESOURCES
+#define _AFX_NO_OLE_RESOURCES
+#define _AFX_NO_TRACKER_RESOURCES
+#define _AFX_NO_PROPERTY_RESOURCES
+
+#if !defined(AFX_RESOURCE_DLL) || defined(AFX_TARG_ENU)
+#ifdef _WIN32
+LANGUAGE 9, 1
+#pragma code_page(1252)
+#endif //_WIN32
+#include "res\Project File Assembler.rc2"  // non-Microsoft Visual C++ edited resources
+#include "afxres.rc"         // Standard components
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+#endif    // not APSTUDIO_INVOKED
+

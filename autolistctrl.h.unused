@@ -1,0 +1,152 @@
+//@doc
+
+//@module AutoListCtrl.h | main header file for CAutoListCtrl class
+
+//-------------------------------------------------------------------
+// CAutoListCtrl header file
+//-------------------------------------------------------------------
+// 
+// Copyright ©2000 Virtual Office Systems Incorporated
+// All Rights Reserved                      
+//
+// This code may be used in compiled form in any way you desire. This
+// file may be redistributed unmodified by any means PROVIDING it is 
+// not sold for profit without the authors written consent, and 
+// providing that this notice and the authors name is included.
+//
+// This code can be compiled, modified and distributed freely, providing
+// that this copyright information remains intact in the distribution.
+//
+// This code may be compiled in original or modified form in any private 
+// or commercial application.
+//
+// This file is provided "as is" with no expressed or implied warranty.
+// The author accepts no liability for any damage, in any form, caused
+// by this code. Use it at your own risk.
+//-------------------------------------------------------------------
+
+#ifndef AUTOLISTCTRL_INCLUDED
+#define AUTOLISTCTRL_INCLUDED
+
+#ifndef LVM_SETEXTENDEDLISTVIEWSTYLE
+#define LVM_SETEXTENDEDLISTVIEWSTYLE (LVM_FIRST + 54)
+#define ListView_SetExtendedListViewStyle(hwndLV, dw)\
+        (DWORD)SNDMSG((hwndLV), LVM_SETEXTENDEDLISTVIEWSTYLE, 0, dw)
+
+#define LVM_GETEXTENDEDLISTVIEWSTYLE (LVM_FIRST + 55)
+#define ListView_GetExtendedListViewStyle(hwndLV)\
+        (DWORD)SNDMSG((hwndLV), LVM_GETEXTENDEDLISTVIEWSTYLE, 0, 0)
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+// @class Extends the CListCtrl class adding automatic sorting, column
+//		  sizing and resizing and column data types.
+class CAutoListCtrl : public CListCtrl
+{
+// Construction
+public:
+	int GetCurSel();
+	BOOL SetItemData(int nItem, DWORD dwData);
+	DWORD GetItemData( int nItem ) const;
+	int GetColumnType(int nCol);
+	BOOL SetColumnType(int nCol, int nType);
+	int SetCurSel(int nSelect);
+	CDWordArray m_HeaderWidth;
+	CDWordArray m_ColumnType;
+
+	enum {	// Column Types
+		TextCol = 0,
+		NumberCol = 1,
+		FileSizeCol = 2,
+		DateCol = 3
+	};
+
+	BOOL DeleteAllItems( );
+	BOOL DeleteItem( int nItem );
+	void SortOnColumn(int nCol);
+	CImageList* SetImageList( CImageList* pImageList, int nImageList );
+	BOOL SetColumnText(int nCol, LPCTSTR pszHeading);
+	int GetSelectedItems(int iMaxCount, int *pIndexArray);
+
+	CAutoListCtrl();
+	BOOL DeleteColumn( int nCol );
+	int InsertColumn( int nCol, const LV_COLUMN* pColumn );
+	int InsertColumn( int nCol, LPCTSTR lpszColumnHeading, int nFormat = LVCFMT_LEFT, int nWidth = -1, int nSubItem = -1 );
+
+	int InsertItem( const LV_ITEM* pItem );
+  	int InsertItem( int nItem, LPCTSTR lpszItem );
+  	int InsertItem( int nItem, LPCTSTR lpszItem, int nImage );
+  	int InsertItem( UINT nMask, int nItem, LPCTSTR lpszItem, UINT nState, UINT nStateMask, int nImage, LPARAM lParam );
+
+	BOOL SetItemText( int nItem, int nSubItem, LPCTSTR lpszText );
+
+	int	GetColumnCount()	{ return m_uColumnCount; }
+	int GetHeaderWidth(int nCol)	{ return (int)m_HeaderWidth[nCol]; }
+	int	GetSortColumn()		{ return m_nSortColumn; }
+	BOOL IsSortAscending()  { return m_fSortAscending; }
+	void SortOnColumnAscending(int nCol);
+
+// Attributes
+public:
+
+// Operations
+public:
+
+// Overrides
+	// ClassWizard generated virtual function overrides
+	//{{AFX_VIRTUAL(CAutoListCtrl)
+	//}}AFX_VIRTUAL
+
+// Implementation
+public:
+	CImageList * CreateDragImageEx( LPPOINT lpPoint );
+	enum ExtendedStyle
+	{ 
+		Gridlines			= LVS_EX_GRIDLINES,
+		SubitemImages		= LVS_EX_SUBITEMIMAGES,
+		CheckBoxes			= LVS_EX_CHECKBOXES,
+		TrackSelect			= LVS_EX_TRACKSELECT,
+		HeaderDragDrop		= LVS_EX_HEADERDRAGDROP,
+		FullRowSelect		= LVS_EX_FULLROWSELECT,
+		OneClickActivate	= LVS_EX_ONECLICKACTIVATE,
+	};
+
+	BOOL SetExtendedStyle(DWORD dwStyle);
+	virtual ~CAutoListCtrl();
+
+	static int CALLBACK CompareItems(LPARAM lParam1, LPARAM lParam2,  
+									LPARAM lParamSort); 
+
+
+	// Generated message map functions
+protected:
+	int m_nSortColumn;
+	BOOL m_fSortAscending;
+	BOOL m_fLocked;
+	DWORD m_dwImageWidth;
+	//{{AFX_MSG(CAutoListCtrl)
+	afx_msg void OnColumnclick(NMHDR* pNMHDR, LRESULT* pResult);
+	afx_msg void OnDestroy();
+	//}}AFX_MSG
+
+	DECLARE_MESSAGE_MAP()
+
+protected:
+	void SetMinColumnWidth(int nCol, int nWidth);
+
+private:
+
+	unsigned int m_uColumnCount;
+};
+
+inline void CAutoListCtrl::SetMinColumnWidth(int nCol, int nWidth)
+{
+	if(nCol == 0)
+		nWidth += m_dwImageWidth;
+
+	if(GetColumnWidth(nCol) < nWidth)
+		SetColumnWidth(nCol, nWidth);
+}
+
+#endif // AUTOLISTCTRL_INCLUDED
+/////////////////////////////////////////////////////////////////////////////

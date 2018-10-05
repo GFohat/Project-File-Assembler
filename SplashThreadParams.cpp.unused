@@ -1,0 +1,40 @@
+// SplashThreadParams.cpp: implementation of the CSplashThreadParams class.
+//
+//////////////////////////////////////////////////////////////////////
+
+#include "stdafx.h"
+#include "project file assembler.h"
+#include "SplashThreadParams.h"
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[]=__FILE__;
+#define new DEBUG_NEW
+#endif
+
+//////////////////////////////////////////////////////////////////////
+// Construction/Destruction
+//////////////////////////////////////////////////////////////////////
+
+CSplashThreadParams::CSplashThreadParams()
+{
+
+}
+
+CSplashThreadParams::~CSplashThreadParams()
+{
+
+}
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	03/05/2007 12:23:03
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+const CSplashThreadParams & CSplashThreadParams::operator = (const CSplashThreadParams & src)
+{
+
+	return * this;
+}

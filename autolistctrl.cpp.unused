@@ -1,0 +1,871 @@
+//@doc
+//@module AutoListCtrl.cpp | Implementation of CAutoListCtrl class
+
+//-------------------------------------------------------------------
+// CAutoListCtrl implementation file
+//-------------------------------------------------------------------
+// 
+// Copyright ©2000 Virtual Office Systems Incorporated
+// All Rights Reserved                      
+//
+// This code may be used in compiled form in any way you desire. This
+// file may be redistributed unmodified by any means PROVIDING it is 
+// not sold for profit without the authors written consent, and 
+// providing that this notice and the authors name is included.
+//
+// This code can be compiled, modified and distributed freely, providing
+// that this copyright information remains intact in the distribution.
+//
+// This code may be compiled in original or modified form in any private 
+// or commercial application.
+//
+// This file is provided "as is" with no expressed or implied warranty.
+// The author accepts no liability for any damage, in any form, caused
+// by this code. Use it at your own risk.
+//-------------------------------------------------------------------
+
+#include "commctrl.h"
+#include "stdafx.h"
+#include "AutoListCtrl.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+class CAutoListItemData
+{
+public:
+	CAutoListItemData(DWORD dwUser = 0);
+	~CAutoListItemData();
+
+	CMapWordToPtr&	GetTextMap()	{ return m_Map; }
+	DWORD			GetData()		{ return m_dwUser; }
+	BOOL			SetData(DWORD dwUser)	{ m_dwUser = dwUser; return TRUE; }
+
+private:
+	CMapWordToPtr	m_Map;
+	DWORD			m_dwUser;
+};
+
+CAutoListItemData::CAutoListItemData(DWORD dwUser)
+{
+	m_dwUser = dwUser;
+}
+
+CAutoListItemData::~CAutoListItemData()
+{
+}
+
+/////////////////////////////////////////////////////////////////////////////
+// CAutoListCtrl
+
+//@mfunc Constructor for CAutoListCtrl class
+CAutoListCtrl::CAutoListCtrl()
+{
+	m_uColumnCount = 0;
+	m_dwImageWidth = 0;
+	m_fLocked = FALSE;
+	m_nSortColumn = -1;
+}
+
+//@mfunc Destructor for CAutoListCtrl class
+CAutoListCtrl::~CAutoListCtrl()
+{
+}
+
+BEGIN_MESSAGE_MAP(CAutoListCtrl, CListCtrl)
+	//{{AFX_MSG_MAP(CAutoListCtrl)
+	ON_NOTIFY_REFLECT(LVN_COLUMNCLICK, OnColumnclick)
+	ON_WM_DESTROY()
+	//}}AFX_MSG_MAP
+END_MESSAGE_MAP()
+
+/////////////////////////////////////////////////////////////////////////////
+// CAutoListCtrl message handlers
+
+//@mfunc Insert a column into the list control
+//@rdesc Returns the index of the new column, or -1 if there is an error.
+int CAutoListCtrl::InsertColumn( 
+		int nCol,					//@parm Index of the column to insert before.
+									// @flag -1 | Add column at end of list
+		LPCTSTR pszColumnHeading,	//@parm Title of the column
+		int nFormat,				//@parm Format of the column.   See CListCtrl
+									//		for details.
+		int nWidth,					//@parm Width of the column in pixels.
+									// @flag -1 (default) | Autosize the column to 
+									//						the header text
+		int nSubItem)				//@parm Index of the subitem associated with 
+									//		the column.   Default is -1.
+									// @flag -1 (default) | No subitem is associatied 
+									//						with the column.
+
+{
+	ASSERT(AfxIsValidString(pszColumnHeading));
+
+	if(nCol == -1)
+	{
+		nCol = m_uColumnCount;
+	}
+
+	int iNew = CListCtrl::InsertColumn(nCol, pszColumnHeading, nFormat, nWidth, nSubItem);
+
+	if(iNew != -1)
+	{
+		if(nWidth == -1)
+		{
+			CListCtrl::SetColumnWidth(iNew, LVSCW_AUTOSIZE_USEHEADER);
+			nWidth = CListCtrl::GetColumnWidth(iNew);
+		}
+
+		if((int)m_uColumnCount <= nCol)
+		{
+			m_uColumnCount = nCol + 1;
+			m_HeaderWidth.SetAtGrow(nCol, nWidth);
+			m_ColumnType.SetAtGrow(nCol, CAutoListCtrl::TextCol);
+		}
+		else
+			SetMinColumnWidth(nCol, nWidth);
+	}
+
+	return iNew;
+}
+
+//@mfunc Insert a column into the list control
+//@rdesc Returns the index of the new column, or -1 if there is an error.
+int CAutoListCtrl::InsertColumn( 
+		int nCol,					//@parm Index of the column to insert before.
+									// @flag -1 | Add column at end of list
+		const LV_COLUMN* pColumn )	//@parm Pointer to <t LV_COLUMN> structure
+									//		containing parameters for new column.
+{
+	ASSERT(AfxIsValidAddress(pColumn, sizeof(LV_COLUMN), FALSE));
+
+	if(nCol == -1)
+		nCol = m_uColumnCount;
+
+	int iNew = CListCtrl::InsertColumn(nCol, pColumn);
+
+	if(iNew != -1)
+	{
+		if( pColumn->cx == -1)
+		{
+			CListCtrl::SetColumnWidth(iNew, LVSCW_AUTOSIZE_USEHEADER);
+			((LV_COLUMN*)pColumn)->cx = CListCtrl::GetColumnWidth(iNew);
+		}
+
+		if((int)m_uColumnCount <= nCol)
+		{
+			m_uColumnCount = nCol + 1;
+			m_HeaderWidth.SetAtGrow(nCol, pColumn->cx);
+			m_ColumnType.SetAtGrow(nCol, CAutoListCtrl::TextCol);
+		}
+		else
+			SetMinColumnWidth(nCol, pColumn->cx);
+	}
+
+	return iNew;
+}
+
+//@mfunc Remove a column from the list
+//@rdesc TRUE | Column Removed
+//@rdesc FALSE | Unable to remove column or column does not exist.
+BOOL CAutoListCtrl::DeleteColumn( 
+		int nCol )					//@parm Zero based index of column to remove.
+{
+	BOOL fSuccess = CListCtrl::DeleteColumn(nCol);
+
+	if(fSuccess)
+	{
+		if(m_uColumnCount)
+			m_uColumnCount--;
+	}
+
+	return fSuccess;
+}
+
+//@mfunc Insert a new item into the list
+//@rdesc Returns the index of the new item.
+//@rvalue -1 | Unable to insert item
+int CAutoListCtrl::InsertItem( 
+		const LV_ITEM* pItem )	//@parm Pointer to <t LV_ITEM> structure containing
+								//		parameters for the new item.
+{
+	ASSERT(AfxIsValidAddress(pItem, sizeof(LV_ITEM), FALSE));
+
+	if(GetSortColumn() == -1)
+	{
+		if(pItem->iItem == -1)
+			(int)pItem->iItem = GetItemCount();
+	}
+
+	int iNew = CListCtrl::InsertItem(pItem);
+
+	if(iNew != -1)
+	{
+		CListCtrl::SetColumnWidth(0, LVSCW_AUTOSIZE_USEHEADER);	// LVSCW_AUTOSIZE
+
+		int iNewWidth = CListCtrl::GetColumnWidth(0);
+
+		SetMinColumnWidth(0, iNewWidth);
+		
+		CAutoListItemData* pData = new CAutoListItemData;
+
+		CString*	pstrCur;
+		if(pData->GetTextMap().Lookup(0, (PVOID&)pstrCur))
+		{
+			pData->GetTextMap().RemoveKey(0);
+			delete pstrCur;
+		}
+
+		pData->GetTextMap().SetAt(0, new CString( GetItemText(iNew, 0) ));
+		for(int iCol = 1; iCol < GetColumnCount(); iCol++)
+			pData->GetTextMap().SetAt(iCol, new CString(""));
+
+		CListCtrl::SetItemData(iNew, (DWORD)pData);
+	}
+
+	return iNew;
+}
+
+//@mfunc Insert a new item into the list
+//@rdesc Returns the index of the new item.
+//@rvalue -1 | Unable to insert item
+int CAutoListCtrl::InsertItem( 
+		int nItem,			//@parm Index where item is to be inserted
+		LPCTSTR pszItem )	//@parm Name of the item
+{
+	ASSERT(AfxIsValidString(pszItem));
+
+	LV_ITEM	Item;
+
+	Item.mask = LVIF_TEXT;
+	Item.iItem = nItem;
+	Item.iSubItem = 0;
+	Item.pszText = (LPTSTR)pszItem;
+
+	return InsertItem(&Item);
+
+}
+
+//@mfunc Insert a new item into the list
+//@rdesc Returns the index of the new item.
+//@rvalue -1 | Unable to insert item
+int CAutoListCtrl::InsertItem( 
+		int nItem,			//@parm Index where item is to be inserted
+		LPCTSTR pszItem,	//@parm Name of the item
+		int nImage )		//@parm Image in imagemap to use for this item
+{
+	ASSERT(AfxIsValidString(pszItem));
+
+	LV_ITEM	Item;
+
+	Item.mask = LVIF_TEXT | LVIF_IMAGE;
+	Item.iItem = nItem;
+	Item.iSubItem = 0;
+	Item.pszText = (LPTSTR)pszItem;
+	Item.iImage = nImage;
+
+	return InsertItem(&Item);
+}
+
+//@mfunc Insert a new item into the list
+//@rdesc Returns the index of the new item.
+//@rvalue -1 | Unable to insert item
+int CAutoListCtrl::InsertItem( 
+		UINT nMask,			//@parm See <t CListCtrl::InsertItem> for details
+		int nItem,			//@parm Index where item is to be inserted
+		LPCTSTR pszItem,	//@parm Name of the item
+		UINT nState,		//@parm See <t CListCtrl::InsertItem> for details
+		UINT nStateMask,	//@parm See <t CListCtrl::InsertItem> for details
+		int nImage,			//@parm Image from image map to use for this item
+		LPARAM lParam )		//@parm 32-bit value to associate with this item
+{
+	ASSERT(AfxIsValidString(pszItem));
+
+	LV_ITEM	Item;
+
+	Item.mask = LVIF_TEXT | LVIF_IMAGE | LVIF_PARAM | LVIF_STATE;
+	Item.iItem = nItem;
+	Item.iSubItem = 0;
+	Item.state = nState;
+	Item.stateMask = nStateMask;
+	Item.pszText = (LPTSTR)pszItem;
+	Item.iImage = nImage;
+	Item.lParam = lParam;
+
+	return InsertItem(&Item);
+}
+
+//@mfunc Set or change the text for a specified column in an item.
+//@rvalue TRUE | Text set successfully
+//@rvalue FALSE | Unable to set text for the specified item or column.
+BOOL CAutoListCtrl::SetItemText(
+		int nItem,		//@parm Index of item to set
+		int nSubItem,	//@parm 0 based column number
+		LPCTSTR pszText)	//@parm New text value for the column
+{
+	ASSERT(AfxIsValidString(pszText));
+
+	BOOL fSuccess = CListCtrl::SetItemText(nItem, nSubItem, pszText);
+
+	if(fSuccess)
+	{
+		CListCtrl::SetColumnWidth(nSubItem, LVSCW_AUTOSIZE_USEHEADER);	// LVSCW_AUTOSIZE
+
+		int iNewWidth = CListCtrl::GetColumnWidth(nSubItem);
+
+		SetMinColumnWidth(nSubItem, iNewWidth);
+		
+		CAutoListItemData	*pData = (CAutoListItemData*)CListCtrl::GetItemData(nItem);
+
+		CString*	pstrCur;
+		if(pData->GetTextMap().Lookup(nSubItem, (PVOID&)pstrCur))
+		{
+			pData->GetTextMap().RemoveKey(nSubItem);
+			delete pstrCur;
+		}
+
+		pData->GetTextMap().SetAt(nSubItem, new CString(pszText));
+
+		CString strName = GetItemText(nItem, 0);
+	}
+
+	return fSuccess;
+}
+
+//@mfunc Retrieve an array of the indexes of all selected items in the list
+//@rvalue Returns the number of elements returned.
+int CAutoListCtrl::GetSelectedItems(
+		int iMaxCount,		// Size of <p pIndexArray>
+		int *pIndexArray)	// Array of integers to hold item indexes
+{
+	ASSERT(AfxIsValidAddress(pIndexArray, sizeof(int) * iMaxCount));
+
+	int iCount = 0;
+
+	for(int i = 0; i < GetItemCount(); i++)
+	{
+		if(GetItemState(i, LVIS_SELECTED))
+		{
+			if(iCount >= iMaxCount)
+				break;
+
+			pIndexArray[iCount++] = i;
+		}
+	}
+
+	return iCount;
+}
+
+//@mfunc Change the text of a column header
+//@rvalue TRUE | Column text set successfully
+//@rvalue FALSE | Unable to set column text
+BOOL CAutoListCtrl::SetColumnText(
+		int nCol,			//@parm Zero based column number to set.
+		LPCTSTR pszHeading)	//@parm New column header text
+{
+	ASSERT(AfxIsValidString(pszHeading));
+
+	LV_COLUMN	ColumnInfo;
+	BOOL		fSuccess;
+
+	ColumnInfo.mask = LVCF_TEXT;
+	ColumnInfo.pszText = (LPTSTR)pszHeading;
+	ColumnInfo.cchTextMax = _tcslen(pszHeading);
+
+	fSuccess = SetColumn(nCol, &ColumnInfo);
+
+	if(fSuccess)
+	{
+		if(*pszHeading == 0)
+		{
+			m_HeaderWidth[nCol] = 0;
+			SetColumnWidth(nCol, 0);
+		}
+		else
+		{
+			ListView_SetColumnWidth(m_hWnd, nCol, LVSCW_AUTOSIZE_USEHEADER); // LVSCW_AUTOSIZE
+			if(GetColumnWidth(nCol) < GetHeaderWidth(nCol))
+				SetColumnWidth(nCol, GetHeaderWidth(nCol));
+		}
+	}
+
+	return fSuccess;
+}
+
+//@mfunc Assigns an image list to a list view control.
+//@rdesc Returns a pointer to the previous image list.
+CImageList* CAutoListCtrl::SetImageList( 
+		CImageList* pImageList,		//@parm Pointer to the image list to assign
+		int nImageList )			//@parm Type of image list.   See 
+									//		<t CListCtrl::SetImageList> for
+									//		details.
+{
+	ASSERT(AfxIsValidAddress(pImageList, sizeof(CImageList), FALSE));
+
+	if(pImageList)
+	{
+		IMAGEINFO	ImageInfo;
+
+		memset(&ImageInfo, 0, sizeof(IMAGEINFO));
+		pImageList->GetImageInfo(0, &ImageInfo);
+		m_dwImageWidth = ImageInfo.rcImage.right - ImageInfo.rcImage.left;
+	}
+
+	ModifyStyle(0, LVS_SHOWSELALWAYS, 0);
+	return CListCtrl::SetImageList(pImageList, nImageList);
+}
+
+//@mfunc Notification from list control that the user has clicked
+//		 on the header of a column.
+void CAutoListCtrl::OnColumnclick(
+		NMHDR* pNMHDR,		//@parm Pointer to <t NMHDR> structure
+		LRESULT* pResult)	//@parm Pointer to result.
+							// @flag 0 | Message processed
+{
+	ASSERT(AfxIsValidAddress(pNMHDR, sizeof(NMHDR), FALSE));
+	ASSERT(AfxIsValidAddress(pResult, sizeof(LRESULT), TRUE));
+
+	NM_LISTVIEW* pNMListView = (NM_LISTVIEW*)pNMHDR;
+	
+	SortOnColumn(pNMListView->iSubItem);
+
+	*pResult = 0;
+}
+
+//@mfunc Callback function used by list control for sorting.
+//@rvalue <lt>1 | Item 1 should be placed before Item 2
+//@rvalue 0		| Item 1 and Item 2 are identical
+//@rvalue <gt>1 | Item 2 should be placed before Item 1
+int CALLBACK CAutoListCtrl::CompareItems(
+		LPARAM lParam1,		//@parm Pointer to <t CMapWordToPtr> containing
+							//		text values for each column in item 1
+		LPARAM lParam2,		//@parm Pointer to <t CMapWordToPtr> containing
+							//		text values for each column in item 2
+		LPARAM lParamSort)	//@parm Pointer to the list control being sorted.
+							//@devnote Required since this is a static 
+							//		function which therefore does not have a
+							//		this pointer.
+{
+	CMapWordToPtr	*pMap1 = (CMapWordToPtr*)lParam1;
+	CMapWordToPtr	*pMap2 = (CMapWordToPtr*)lParam2;
+	CAutoListCtrl	*pThis = (CAutoListCtrl*)lParamSort;
+
+	ASSERT(pMap1);
+	ASSERT(pMap2);
+
+	CString *pValue1;
+	CString *pValue2; 
+
+	VERIFY( pMap1->Lookup(pThis->GetSortColumn(), (PVOID&)pValue1) );
+	VERIFY( pMap2->Lookup(pThis->GetSortColumn(), (PVOID&)pValue2) );
+
+	int iResult;
+
+	switch(pThis->GetColumnType(pThis->GetSortColumn() ))
+	{
+	case CAutoListCtrl::TextCol:
+		iResult = pValue1->Compare(*pValue2);
+		break;
+
+	case CAutoListCtrl::NumberCol:
+		{
+		ASSERT(pThis->GetSortColumn() != 0);
+		int nVal1 = atoi((char*)(LPCTSTR)pValue1);
+		int nVal2 = atoi((char*)(LPCTSTR)pValue2);
+
+		iResult = (nVal2 - nVal1);
+		break;
+		}
+
+	case CAutoListCtrl::FileSizeCol:
+		{
+		ASSERT(pThis->GetSortColumn() != 0);
+		int nVal1 = atoi((char*)(LPCTSTR)*pValue1);
+		int nVal2 = atoi((char*)(LPCTSTR)*pValue2);
+
+		if(pValue1->Right(1) == "K")
+			nVal1 *= 1024;
+		else if(pValue1->Right(1) == "M")
+			nVal1 *= 1024000;
+
+		if(pValue2->Right(1) == "K")
+			nVal2 *= 1024;
+		else if(pValue2->Right(1) == "M")
+			nVal2 *= 1024000;
+
+		iResult = nVal2 - nVal1;
+		break;
+		}
+
+	case CAutoListCtrl::DateCol:
+		{
+		ASSERT(pThis->GetSortColumn() != 0);
+
+		COleDateTime	Date1, Date2;
+		Date1.ParseDateTime((LPCTSTR)*pValue1, VAR_DATEVALUEONLY);
+		Date2.ParseDateTime((LPCTSTR)*pValue2, VAR_DATEVALUEONLY);
+		
+		if(Date1 < Date2)
+			iResult = -1;
+		else if (Date1 > Date2)
+			iResult = 1;
+		else
+			iResult = 0;
+		break;
+		}
+
+	default:
+		ASSERT(FALSE);
+	}
+
+	if(!pThis->IsSortAscending())
+		iResult = -iResult;
+
+	if((iResult == 0) && (pThis->GetSortColumn() != 0))
+	{	// Use name as a secondary key for identical primary keys
+		VERIFY( pMap1->Lookup(0, (PVOID&)pValue1) );
+		VERIFY( pMap2->Lookup(0, (PVOID&)pValue2) );
+
+		iResult = pValue1->Compare(*pValue2);
+		if(!pThis->IsSortAscending())
+			iResult = -iResult;
+	}
+
+	return iResult;
+}
+
+//@mfunc Sort contents of list on specified column.   Initially, 
+//		 the column will be sorted ascending.   If the list is 
+//		 already sorted on the specified column, the sort will
+//		 toggle between ascending and descending sort order on
+//		 each subsequent call.
+void CAutoListCtrl::SortOnColumn(
+		int nCol)			//@parm Zero based column number.
+{
+	if(nCol == -1)
+		return;
+
+	ASSERT(nCol < GetColumnCount());
+
+	if(nCol == m_nSortColumn)
+		m_fSortAscending = !m_fSortAscending;
+	else
+	{
+		m_nSortColumn = nCol;
+		m_fSortAscending = TRUE;
+	}
+
+	SortItems(CompareItems, (DWORD)this);
+}
+
+//@mfunc Delete an item from the list
+//@rvalue TRUE	| Item deleted successfully
+//@rvalue FALSE | Item could not be deleted
+BOOL CAutoListCtrl::DeleteItem( 
+		int nItem )			//@parm Index of item to delete
+{
+	CAutoListItemData* pData = (CAutoListItemData*)CListCtrl::GetItemData(nItem);
+
+	if(pData)
+	{ 
+		POSITION pos = pData->GetTextMap().GetStartPosition();
+		WORD		wKey;
+		CString*	pstrValue;
+			
+		while(pos)
+		{
+			pData->GetTextMap().GetNextAssoc(pos, wKey, (PVOID&)pstrValue);
+			delete pstrValue;
+		}
+
+		delete pData;
+	}
+
+	BOOL fSuccess = CListCtrl::DeleteItem(nItem);
+
+	return fSuccess;
+}
+
+//@mfunc Delete all items in the list
+//@rvalue TRUE | All items deleted
+//@rvalue FALSE | No items in the list
+BOOL CAutoListCtrl::DeleteAllItems( )
+{
+	CAutoListItemData*	pData = NULL;
+	POSITION			pos;
+	WORD				wKey;
+	CString*			pstrValue;
+
+	for(int nItem = 0; nItem < GetItemCount(); nItem++)
+	{
+		pData = (CAutoListItemData*)CListCtrl::GetItemData(nItem);
+
+		if(pData)
+		{ 
+			pos = pData->GetTextMap().GetStartPosition();
+				
+			while(pos)
+			{
+				pData->GetTextMap().GetNextAssoc(pos, wKey, (PVOID&)pstrValue);
+				delete pstrValue;
+			}
+
+			delete pData;
+		}
+	}
+
+	BOOL fSuccess = CListCtrl::DeleteAllItems();
+	return fSuccess;
+}
+
+//@mfunc Set the type of data in the specified column.   Used
+//		 for sorting to determine proper sorting method to use.
+//@rvalue TRUE  | Column type set successfully
+//@rvalue FALSE | Column type could not be set.
+BOOL CAutoListCtrl::SetColumnType(
+		int nCol,		//@parm Zero based index of column to set
+		int nType)		//@parm Type of data.   Default is 
+						//		CAutoListCtrl::TextCol.
+						// @flag TextCol | Text
+						// @flag NumberCol | Numeric Value
+						// @flag FileSizeCol	| File Size.   Supports
+						//		 terminology such as 45.3k and 3.2Meg
+						//		 for sorting purposes.
+						// @flag DateCol | Values are dates (international)
+{
+	if(nCol > GetColumnCount())
+		return FALSE;
+
+	switch(nType)
+	{
+	case CAutoListCtrl::TextCol:
+	case CAutoListCtrl::NumberCol:
+	case CAutoListCtrl::FileSizeCol:
+	case CAutoListCtrl::DateCol:
+		m_ColumnType.SetAt(nCol, nType);
+		return TRUE;
+
+	default:
+		return FALSE;
+	}
+}
+
+//@mfunc Determine the type of a column
+//@rdesc Type of the column.   See <CAutoListCtrl.SetColumnType>
+//		 for details.
+int CAutoListCtrl::GetColumnType(
+		int nCol)	// @parm Zero based column number
+{
+	if((nCol < 0) || (nCol > GetColumnCount() ))
+		return -1;
+
+	return m_ColumnType[nCol];
+}
+
+void CAutoListCtrl::OnDestroy() 
+{
+	DeleteAllItems();
+	CListCtrl::OnDestroy();
+}
+
+//@mfunc Set extended list view style
+//@rdesc Returns TRUE if style was set successfully
+BOOL CAutoListCtrl::SetExtendedStyle(
+		DWORD dwStyle)	//@parm Style to set
+						// @flag CAutoListCtrl::Gridlines		  | Display the list with gridlines
+						// @flag CAutoListCtrl::SubitemImages	  | Display images on subitems as well as primary column
+						// @flag CAutoListCtrl::CheckBoxes		  | Display checkboxes in the list
+						// @flag CAutoListCtrl::TrackSelect		  | Selects item without clicking.   Pausing over item causes selection.
+						// @flag CAutoListCtrl::HeaderDragDrop	  | Support drag and drop column headers.
+						// @flag CAutoListCtrl::FullRowSelect	  | Allow the user to click anywhere in the item to allow selection instead 
+						//											of only over the text in the first column of the item.
+						// @flag CAutoListCtrl::OneClickActivate  | Clicking on an inactive list surfaces and selects an item
+						// @flag CAutoListCtrl::TwoClickActivate  | First click activates the list; second click selects.
+{
+	if(!IsWindow(*this))
+		return FALSE;
+
+	ListView_SetExtendedListViewStyle(*this, dwStyle);
+	return TRUE;
+}
+
+
+int CAutoListCtrl::SetCurSel( int nSelect )
+{
+	ASSERT(nSelect != -1);
+
+	if(GetItemCount() < nSelect + 1)
+		return -1;
+
+	// First deselect any selected items
+	int iSelCount = (int)GetItemCount();
+	if(iSelCount)
+	{
+		int *	pSelected = new int[iSelCount];
+
+		iSelCount = GetSelectedItems(iSelCount, pSelected);
+
+		for(int iSelItem = 0; iSelItem < iSelCount; iSelItem++)
+			SetItemState(pSelected[iSelItem], 0, LVIS_SELECTED);
+
+		delete[] pSelected;
+
+		// Select the new item
+		if(!SetItemState(nSelect, LVIS_SELECTED, LVIS_SELECTED))
+		{
+			ASSERT(FALSE);
+		}
+	}
+
+	return 0;
+}
+
+DWORD CAutoListCtrl::GetItemData( int nItem ) const
+{
+	CAutoListItemData* pData = (CAutoListItemData*)CListCtrl::GetItemData(nItem);
+
+	if(!pData)
+		return 0;
+
+	return pData->GetData();
+}
+
+BOOL CAutoListCtrl::SetItemData(int nItem, DWORD dwData)
+{
+	CAutoListItemData* pData = (CAutoListItemData*)CListCtrl::GetItemData(nItem);
+
+	if(!pData)
+		return CListCtrl::SetItemData(nItem, (DWORD) new CAutoListItemData(dwData));
+	
+	return pData->SetData(dwData);
+}
+
+int CAutoListCtrl::GetCurSel()
+{
+	int iSel;
+	
+	int iCount = GetSelectedItems(1, &iSel);
+
+	if(iCount == 0)
+		return -1;
+
+	return iSel;
+}
+
+void CAutoListCtrl::SortOnColumnAscending(int nCol)
+{
+
+
+	if(nCol == -1)
+		return;
+
+	ASSERT(nCol < GetColumnCount());
+
+	m_nSortColumn = nCol;
+	m_fSortAscending = TRUE;
+	
+
+	SortItems(CompareItems, (DWORD)this);
+
+
+
+}
+
+CImageList * CAutoListCtrl::CreateDragImageEx(LPPOINT lpPoint)
+{
+	CRect	cSingleRect;	
+	CRect	cCompleteRect( 0,0,0,0 );
+	int	nIdx;
+	BOOL	bFirst = TRUE;
+	//
+	// Determine the size of the drag image 
+	//
+	POSITION pos = GetFirstSelectedItemPosition();
+	while (pos)
+	{
+		nIdx = GetNextSelectedItem( pos );
+		GetItemRect( nIdx, cSingleRect, LVIR_BOUNDS );
+		if (bFirst)
+		{
+			// Initialize the CompleteRect
+			GetItemRect( nIdx, cCompleteRect, LVIR_BOUNDS );
+			bFirst = FALSE;
+		}
+		cCompleteRect.UnionRect( cCompleteRect, cSingleRect );
+	}
+
+	//
+	// Create bitmap in memory DC
+	//
+	CClientDC	cDc(this);	
+	CDC		cMemDC;	
+	CBitmap   	cBitmap;
+
+	if(!cMemDC.CreateCompatibleDC(&cDc))		
+		return NULL;	
+
+	if(!cBitmap.CreateCompatibleBitmap(&cDc, cCompleteRect.Width(), cCompleteRect.Height()))
+		return NULL;
+	
+	CBitmap* pOldMemDCBitmap = cMemDC.SelectObject( &cBitmap );
+	// Here green is used as mask color
+	cMemDC.FillSolidRect(0,0,cCompleteRect.Width(), cCompleteRect.Height(), RGB(0, 255, 0)); 
+
+	//
+	// Paint each DragImage in the DC
+	//
+	CImageList *pSingleImageList;
+	CPoint		cPt;
+
+	pos = GetFirstSelectedItemPosition();
+	while (pos)
+	{
+		nIdx = GetNextSelectedItem( pos );
+		GetItemRect( nIdx, cSingleRect, LVIR_BOUNDS );
+
+		pSingleImageList = CreateDragImage( nIdx, &cPt);
+		if (pSingleImageList)
+		{
+			pSingleImageList->DrawIndirect( &cMemDC, 
+							0, 
+							CPoint( cSingleRect.left-cCompleteRect.left, 
+							cSingleRect.top-cCompleteRect.top ),
+							cSingleRect.Size(), 
+							CPoint(0,0));
+			delete pSingleImageList;
+		}
+	}
+
+	cMemDC.SelectObject( pOldMemDCBitmap );
+	//
+	// Create the imagelist	with the merged drag images
+	//
+	CImageList* pCompleteImageList = new CImageList;
+	
+	pCompleteImageList->Create(	cCompleteRect.Width(), 
+					cCompleteRect.Height(), 
+					ILC_COLOR | ILC_MASK, 0, 1);
+	// Here green is used as mask color
+	pCompleteImageList->Add(&cBitmap, RGB(0, 255, 0)); 
+
+	cBitmap.DeleteObject();
+	//
+	// as an optional service:
+	// Find the offset of the current mouse cursor to the imagelist
+	// this we can use in BeginDrag()
+	//
+	if ( lpPoint )
+	{
+		CPoint cCursorPos;
+		GetCursorPos( &cCursorPos );
+		ScreenToClient( &cCursorPos );
+		lpPoint->x = cCursorPos.x - cCompleteRect.left;
+		lpPoint->y = cCursorPos.y - cCompleteRect.top;
+	}
+
+	return( pCompleteImageList );
+
+}

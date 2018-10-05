@@ -1,0 +1,19 @@
+//
+//	// Project File Assembler.idl : IDL source for Project File Assembler.exe
+////
+//// This file will be processed by the MIDL tool to
+//// produce the type library (Project File Assembler.tlb) and marshalling code.
+//import "oaidl.idl";
+//import "ocidl.idl";
+//[
+//	uuid(D3431EF8-6ADC-439E-96F0-B6F4E8AC0502),
+//	version(1.0),
+//	helpstring("Project File Assembler 1.0 Type Library")
+//]
+//library ProjectFileAssemblerLib
+//{
+//	importlib("stdole32.tlb");
+//	importlib("stdole2.tlb");
+//};
+//
+	

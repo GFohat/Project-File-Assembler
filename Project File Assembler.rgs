@@ -1,0 +1,11 @@
+HKCR
+{
+	NoRemove AppID
+	{
+		{91C570CB-760A-45CC-8CA6-C9B9A32637AB} = s 'Project File Assembler'
+		'Project File Assembler.EXE'
+		{
+			val AppID = s {91C570CB-760A-45CC-8CA6-C9B9A32637AB}
+		}
+	}
+}

@@ -1,0 +1,160 @@
+// SplashThread.cpp: implementation of the CSplashThread class.
+//
+//////////////////////////////////////////////////////////////////////
+
+#include "stdafx.h"
+#include "project file assembler.h"
+#include "SplashThread.h"
+
+#include "DlgSplash.h"
+#include "SplashThreadUI.h"
+
+#ifdef _DEBUG
+#undef THIS_FILE
+static char THIS_FILE[]=__FILE__;
+#define new DEBUG_NEW
+#endif
+
+//////////////////////////////////////////////////////////////////////
+// Construction/Destruction
+//////////////////////////////////////////////////////////////////////
+
+//CSplashThread::CSplashThread()
+//:	m_pUIThread	(0)
+//{
+//
+//}
+//
+//CSplashThread::~CSplashThread()
+//{
+//	StopSplashThread();
+//}
+//	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///*
+//	STAMP:	03/05/2007 12:21:17
+//	DESCRIP:	
+//	IN:
+//	OUT:
+//*/
+//bool CSplashThread::StartSplashThread(const CSplashThreadParams & rParams)
+//{
+//	bool bOK = false;
+//
+////	CSplashThreadParams * pStart = new CSplashThreadParams(rParams);
+////	ATLASSERT(pStart);
+////
+////	if(pStart){
+////		CString strThrdName(_T("Splash thread"));
+////
+////		bOK = CBasicThread3::StartBaseThread(
+////											strThrdName
+////											, TF_SplashThread_Wrapper
+////											, LPVOID(pStart)
+////										);
+////		ATLASSERT(bOK);
+////
+////		if(!bOK){
+////			delete pStart;
+////			pStart = 0;
+////		}
+////	}
+//
+//	StopSplashThread();
+//
+//	m_pUIThread = ::AfxBeginThread(
+//									RUNTIME_CLASS(CSplashThreadUI)
+//									, 0, 0, CREATE_SUSPENDED, 0
+//								);
+//	ATLASSERT(m_pUIThread);
+//
+//	if(m_pUIThread){
+//		m_pUIThread->m_bAutoDelete = FALSE;
+//		m_pUIThread->ResumeThread();
+//	}
+//
+//	return bOK;
+//}
+//	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///*
+//	STAMP:	03/05/2007 12:21:20
+//	DESCRIP:	
+//	IN:
+//	OUT:
+//*/
+//void CSplashThread::StopSplashThread(void)
+//{
+////	CBasicThread3::StopBaseThread(5000L);
+//
+//	if(m_pUIThread){
+//		m_pUIThread->PostThreadMessage(WM_QUIT, 0, 0);
+//
+//		ATLTRACE(_T("Quit thread WAIT STARTING!\n"));
+//		DWORD dwWait = ::WaitForSingleObject(m_pUIThread->m_hThread, 15000);
+//
+//		if(WAIT_TIMEOUT == dwWait)
+//			::TerminateThread(m_pUIThread->m_hThread, DWORD(-1L));
+//
+//		m_pUIThread->m_bAutoDelete = TRUE;
+//		m_pUIThread->Delete();
+//		m_pUIThread = 0;
+//	}
+//}
+//
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///*
+//	STAMP:	03/05/2007 12:21:01
+//	DESCRIP:	
+//	IN:
+//	OUT:
+//*/
+///*static*/
+//DWORD WINAPI CSplashThread::TF_SplashThread_Wrapper(LPVOID lpThreadParameter)
+//{
+//	DWORD dwRet = DWORD(-1L);
+//
+//	CSplashThreadParams * pParams = reinterpret_cast<CSplashThreadParams *>(lpThreadParameter);
+//	ATLASSERT(pParams);
+//
+//	if(pParams){
+//		
+//		dwRet = TF_SplashThread_MainLoop(*pParams);
+//
+//		delete pParams;
+//		pParams = 0;
+//	}
+//
+//	return dwRet;
+//}
+//	
+////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+///*
+//	STAMP:	03/05/2007 12:21:05
+//	DESCRIP:	
+//	IN:
+//	OUT:
+//*/
+///*static*/
+//DWORD CSplashThread::TF_SplashThread_MainLoop(const CSplashThreadParams & rParams)
+//{
+//	DWORD dwRet = NOERROR;
+//
+//	CDlgSplash dlgSplash;
+//	
+//	//dlgSplash.Create(IDD_DLG_SPLASH);
+//	//dlgSplash.CenterWindow();
+//	//dlgSplash.ShowWindow(SW_SHOW);
+//
+//	MSG msg;
+//
+//	while(::GetMessage(&msg, 0, 0, 0) > 0){
+//		::TranslateMessage(&msg);
+//		::DispatchMessage(&msg);
+//	}
+//
+//	//dlgSplash.ShowWindow(SW_HIDE);
+//	//dlgSplash.DestroyWindow();
+//
+//	return dwRet;
+//}

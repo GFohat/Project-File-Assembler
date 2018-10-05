@@ -1,0 +1,873 @@
+// DatabaseHandler.cpp : implementation file
+//
+
+#include "stdafx.h"
+#include "FileConfirm.h"
+#include "DatabaseHandler.h"
+
+#ifdef _DEBUG
+#define new DEBUG_NEW
+#undef THIS_FILE
+static char THIS_FILE[] = __FILE__;
+#endif
+
+/////////////////////////////////////////////////////////////////////////////
+// CDatabaseHandler
+
+CDatabaseHandler::CDatabaseHandler()
+{
+}
+
+CDatabaseHandler::~CDatabaseHandler()
+{
+	Disconnect();
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	05/02/2007 15:09:01
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+HRESULT CDatabaseHandler::Connect(const CString & strUDL, const bool bReconnect)
+{
+	HRESULT hr = S_OK;
+
+	if(m_spConnection){
+		if(bReconnect)
+			Disconnect();
+		else
+			return S_OK;
+	}
+
+	m_strConnString.Format(_T("File Name=%s"), strUDL);
+
+	try{
+		THR( hr = m_spConnection.CoCreateInstance(ADODB::CLSID_Connection) );
+		THR( hr = m_spConnection->Open(
+									m_strConnString.AllocSysString()
+									, L""
+									, L""
+									, 0
+								) );
+	}
+	//----------------------------------------------------------
+	catch(_com_error & e){
+		hr = e.Error();
+		HandleHR(hr, _T(""), m_strConnString);
+	}
+
+	return hr;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	05/02/2007 15:08:59
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+void CDatabaseHandler::Disconnect(void)
+{
+	HRESULT hr = S_OK;
+
+	try{
+		if(m_spConnection){
+
+			m_spConnection->Close();
+			m_spConnection = 0;
+		}
+	}
+	//----------------------------------------------------------
+	catch(_com_error & e){
+		hr = e.Error();
+		HandleHR(hr, _T("CDatabaseHandler::Disconnect"), _T(""));
+	}
+
+	//return hr;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	07/02/2007 08:31:22
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+HRESULT CDatabaseHandler::StoreNewRootDirectory(
+												const CString & strRootName
+												, const CString & strRootPath
+												, long & iRecID
+											)
+{
+	HRESULT hr = S_OK;
+
+	CString strSQL;
+
+	try{
+		THR( hr = LookupCurMaxRecID(_T("iRecID"), _T("tblRootPaths"), iRecID) );
+		iRecID ++;
+
+		strSQL.Format(
+				_T(" INSERT INTO tblRootPaths ")
+				_T("	( iRecID, strRootName, strRootPath ) ")
+				_T(" VALUES ")
+				_T("	(%i, '%s', '%s') ")
+				, iRecID
+				, strRootName
+				, strRootPath
+			);
+
+		THR( hr = ExecSQL(strSQL) );
+
+	}
+	//----------------------------------------------------------
+	catch(_com_error & e){
+		hr = e.Error();
+		HandleHR(hr, _T("CDatabaseHandler::StoreNewRootDirectory"), strSQL);
+	}
+
+	return hr;
+}
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	10/02/2007 07:27:02
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+CString CDatabaseHandler::SQLStringVal(const CString & strVal) const
+{
+	CString strRet(strVal);
+
+	strRet.Replace(_T("'"), _T("''"));
+
+	return strRet;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	21/02/2007 15:03:50
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+HRESULT CDatabaseHandler::RenameProject(const CString & strExistName, const CString & strNewName)
+{
+	HRESULT hr = S_OK;
+
+	CString strSQL;
+
+	strSQL.Format(
+				_T(" UPDATE tblRootPaths SET strRootName = '%s' WHERE strRootName = '%s' ")
+				, strNewName, strExistName
+			);
+
+	try{
+		THR( hr = ExecSQL(strSQL) );
+	}
+	//----------------------------------------------------------
+	catch(_com_error & e){
+		hr = e.Error();
+		HandleHR(hr, _T("CDatabaseHandler::RenameProject"), strSQL);
+	}
+
+	return hr;
+}
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	07/02/2007 08:43:29
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+HRESULT CDatabaseHandler::ExecSQL(const CString & strSQL)
+{
+	HRESULT hr = S_OK;
+
+	CComPtr<ADODB::_Command> spCmd = 0;
+
+	try{
+		THR( hr = spCmd.CoCreateInstance(ADODB::CLSID_Command) );
+
+		spCmd->ActiveConnection		= m_spConnection;
+		spCmd->CommandText			= strSQL.AllocSysString();
+		spCmd->CommandType			= ADODB::adCmdText;
+
+		spCmd->Execute(&vtMissing, &vtMissing, ADODB::adCmdText);
+	}
+	//----------------------------------------------------------
+	catch(_com_error & e){
+		hr = e.Error();
+		HandleHR(hr, _T("CDatabaseHandler::ExecSQL"), strSQL);
+	}
+
+	return hr;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	07/02/2007 08:34:11
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+HRESULT CDatabaseHandler::LookupCurMaxRecID(
+											const CString & strFldName
+											, const CString & strTable
+											, long & iMax
+										)
+{
+	HRESULT hr = S_OK;
+
+	CString strSQL;
+
+	strSQL.Format(_T("SELECT MAX (%s) AS MAXREC FROM %s"), strFldName, strTable);
+
+	CComPtr<ADODB::_Recordset>	spRst			= 0;
+	CComPtr<ADODB::Fields>		spFieldColl		= 0;
+	CComPtr<ADODB::Field>		spField			= 0;
+
+	try{
+		THR( hr = OpenRecordSet(strSQL, spRst) );
+
+		spFieldColl = spRst->Fields;
+		spField = spFieldColl->Item[long(0)];
+
+		iMax = spField->Value.lVal;
+	}
+	//----------------------------------------------------------
+	catch(_com_error & e){
+		hr = e.Error();
+		HandleHR(hr, _T("CDatabaseHandler::LookupCurMaxRecID"), strSQL);
+	}
+
+	return hr;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	17/02/2007 10:13:34
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+HRESULT CDatabaseHandler::GetRecCount(const CString & strSQL, long & iRecCount)
+{
+	HRESULT hr = S_OK;
+
+	CComPtr<ADODB::_Recordset>	spRst			= 0;
+
+	iRecCount = 0;
+
+	try{
+		THR( hr = OpenRecordSet(strSQL, spRst) );
+
+		if(!spRst->BOF && !spRst->EndOfFile){
+			THR( hr = spRst->MoveLast() );
+			THR( hr = spRst->MoveFirst() );
+
+			iRecCount = spRst->RecordCount;
+			//ATLTRACE(_T("%i recs in \"%s\"\n"), iRecCount, strSQL);
+		}
+		
+	}
+	//----------------------------------------------------------
+	catch(_com_error & e){
+		hr = e.Error();
+		ASSERT(false);
+	}
+
+	return hr;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	10/02/2007 07:06:04
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+HRESULT CDatabaseHandler::DeleteRootPath(const long iRecID)
+{
+	HRESULT hr = S_OK;
+
+	CString strSQL;
+	
+	try{
+		strSQL.Format(_T("DELETE FROM tblModel WHERE iRootPathID = %i"), iRecID);
+
+		THR( hr = ExecSQL(strSQL) );
+
+		strSQL.Format(_T("DELETE FROM tblRootPaths WHERE iRecID = %i"), iRecID);
+
+		THR( hr = ExecSQL(strSQL) );
+	}
+	//----------------------------------------------------------
+	catch(_com_error & e){
+		hr = e.Error();
+		HandleHR(hr, _T("CDatabaseHandler::DeleteRootPath"), strSQL);
+	}
+
+	return hr;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	05/02/2007 15:30:32
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+HRESULT CDatabaseHandler::OpenRecordSet(const CString & strSQL, CComPtr<ADODB::_Recordset> & spRst)
+{
+	HRESULT hr = S_OK;
+	ATLASSERT(m_spConnection);
+
+	if(!m_spConnection)
+		return E_POINTER;
+
+	try{
+		if(!spRst){
+			THR( hr = spRst.CoCreateInstance(ADODB::CLSID_Recordset) );
+		}
+
+		THR( hr = spRst->Open(
+							CComVariant(strSQL)
+							, CComVariant(m_spConnection)
+							, ADODB::adOpenStatic		//CursorType
+							, ADODB::adLockReadOnly		//LockType
+							, ADODB::adCmdText			//options
+						) );
+	}
+	//----------------------------------------------------------
+	catch(_com_error & e){
+		hr = e.Error();
+		HandleHR(hr, _T("CDatabaseHandler::OpenRecordSet"), strSQL);
+	}
+
+	return hr;
+}
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	07/02/2007 07:27:21
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+HRESULT CDatabaseHandler::InitListCtrl(const CString & strSQL, CListCtrl & rList)
+{
+	HRESULT hr = S_OK;
+
+	CComPtr<ADODB::_Recordset>	spRst			= 0;
+	CComPtr<ADODB::Fields>		spFieldColl		= 0;
+
+	DeleteAllColumns(rList);
+
+	try{
+		THR( hr = OpenRecordSet(strSQL, spRst) );
+
+		spFieldColl = spRst->Fields;
+
+		InitListCtrl(spFieldColl, rList);
+	}
+	//----------------------------------------------------------
+	catch(_com_error & e){
+		hr = e.Error();
+		HandleHR(hr, _T("CDatabaseHandler::InitListCtrl"), strSQL);
+	}
+
+	return hr;
+}
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	07/02/2007 07:34:09
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+void CDatabaseHandler::DeleteAllColumns(CListCtrl & rList)
+{
+	CHeaderCtrl * pHdr = rList.GetHeaderCtrl();
+	ATLASSERT(pHdr);
+
+	if(pHdr){
+		const int iNUM_COLS = pHdr->GetItemCount();
+
+		for(int iDelCol = iNUM_COLS - 1 ; iDelCol >= 0 ; iDelCol--)
+			rList.DeleteColumn(iDelCol);
+	}
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	07/02/2007 07:31:25
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+HRESULT CDatabaseHandler::InitListCtrl(const CComPtr<ADODB::Fields> & spFieldColl, CListCtrl & rList)
+{
+	HRESULT hr = S_OK;
+
+	CWaitCursor wait;
+
+	CComPtr<ADODB::Field>		spField		= 0;
+
+	try{
+		const long iFLD_COUNT = spFieldColl->Count;
+
+		for(long iFld = 0 ; iFld < iFLD_COUNT ; iFld++){
+
+			spField = spFieldColl->Item[iFld];
+
+			THR( hr = AddListColumn(iFld, spField, rList) ); 
+		}
+	}
+	//----------------------------------------------------------
+	catch(_com_error & e){
+		hr = e.Error();
+		HandleHR(hr, _T("CDatabaseHandler::InitListCtrl"), _T(""));
+	}
+
+	return hr;
+}
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	07/02/2007 07:31:22
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+HRESULT CDatabaseHandler::AddListColumn(const long iColNum, const CComPtr<ADODB::Field> & spField, CListCtrl & rList)
+{
+	HRESULT hr = S_OK;
+
+	try{
+		rList.InsertColumn(
+						iColNum
+						, GetColHeaderName(spField->Name)
+						, GetColHeaderFmt(spField->Type)
+					);
+	}
+	//----------------------------------------------------------
+	catch(_com_error & e){
+		hr = e.Error();
+		HandleHR(hr, _T("CDatabaseHandler::AddListColumn"), _T(""));
+	}
+
+	return hr;
+}
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	07/02/2007 07:42:19
+	DESCRIP:
+		
+		  convert eg 'strUserName' to 'User Name', etc
+
+	IN:
+	OUT:
+*/
+CString CDatabaseHandler::GetColHeaderName(const _bstr_t & bstrFldName) const
+{
+	USES_CONVERSION;
+
+	const CString strOrig = OLE2T(bstrFldName);
+
+	CString strRet = strOrig;
+
+//	TCHAR ch = 0;
+//	bool bStarted = false;
+//	const int iMAX = strOrig.GetLength();
+//
+//	for(int iCharPos = 0 ; iCharPos < iMAX ; iCharPos++ ){
+//		ch = strOrig.GetAt(iCharPos);
+//
+//		if(_istupper(ch)){
+//			bStarted = true;
+//
+//			if(!strRet.IsEmpty())
+//				strRet += _T(" ");
+//		}
+//
+//		if(bStarted)
+//			strRet += ch;
+//	}
+
+
+	return strRet;
+}
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	12/02/2007 17:57:27
+	DESCRIP:	
+		typedef struct _HDITEM {
+			UINT    mask; 
+			int     cxy; 
+			LPTSTR  pszText; 
+			HBITMAP hbm; 
+			int     cchTextMax; 
+			int     fmt; 
+			LPARAM  lParam; 
+		#if (_WIN32_IE >= 0x0300)
+			int     iImage;
+			int     iOrder;
+		#endif
+		} HDITEM, FAR * LPHDITEM;
+	IN:
+	OUT:
+*/
+CString CDatabaseHandler::GetColFieldName(const int iCol, CListCtrl & rList) const
+{
+	CString strRet;
+
+	CHeaderCtrl * pHdr = rList.GetHeaderCtrl();
+	ATLASSERT(pHdr && ::IsWindow(pHdr->m_hWnd));
+
+	if(pHdr && ::IsWindow(pHdr->m_hWnd)){
+		
+		//max MS Access field name is about 60?
+		const DWORD dwBUFSIZE = 100L;
+		TCHAR szBuffer[dwBUFSIZE + 5] = {0};
+
+		HDITEM hditem;
+		::ZeroMemory(&hditem, sizeof(HDITEM));
+
+		hditem.mask			= HDI_TEXT;
+		hditem.pszText		= szBuffer;
+		hditem.cchTextMax	= dwBUFSIZE;
+
+		BOOL bOK = pHdr->GetItem(iCol, &hditem);
+		ATLASSERT(bOK);
+
+		strRet = szBuffer;
+
+		if(strRet.Find(_T(' ')) >= 0){
+			strRet = _T('[') + strRet + _T(']');
+		}
+	}
+
+	return strRet;
+}
+	
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	07/02/2007 07:42:21
+	DESCRIP:
+	
+		adEmpty:
+		adTinyInt:
+		adSmallInt:
+		adInteger:
+		adBigInt:
+		adUnsignedTinyInt:
+		adUnsignedSmallInt:
+		adUnsignedInt:
+		adUnsignedBigInt:
+		adSingle:
+		adDouble:
+		adCurrency:
+		adDecimal:
+		adNumeric:
+		adBoolean:
+		adError:
+		adUserDefined:
+		adVariant:
+		adIDispatch:
+		adIUnknown:
+		adGUID:
+		adDate:
+		adDBDate:
+		adDBTime:
+		adDBTimeStamp:
+		adBSTR:
+		adChar:
+		adVarChar:
+		adLongVarChar:
+		adWChar:
+		adVarWChar:
+		adLongVarWChar:
+		adBinary:
+		adVarBinary:
+		adLongVarBinary:
+		adChapter:
+		adFileTime:
+		adPropVariant:
+		adVarNumeric:
+		adArray:
+	
+	IN:
+	OUT:
+*/
+int CDatabaseHandler::GetColHeaderFmt(const ADODB::DataTypeEnum eType) const
+{
+	using namespace ADODB;
+
+	int iFmt = LVCFMT_LEFT;
+	LVCFMT_CENTER;
+	LVCFMT_RIGHT;
+
+	switch(eType){
+		case adEmpty:
+		case adUserDefined:
+		case adVariant:
+		case adIDispatch:
+		case adIUnknown:
+			break;
+
+		case adTinyInt:
+		case adSmallInt:
+		case adInteger:
+		case adBigInt:
+		case adUnsignedTinyInt:
+		case adUnsignedSmallInt:
+		case adUnsignedInt:
+		case adUnsignedBigInt:
+		case adSingle:
+		case adDouble:
+		case adCurrency:
+		case adDecimal:
+		case adNumeric:
+		case adError:
+			iFmt = LVCFMT_RIGHT;
+			break;
+
+		case adBoolean:
+		case adGUID:
+		case adDate:
+		case adDBDate:
+		case adDBTime:
+		case adDBTimeStamp:
+		case adFileTime:
+			iFmt = LVCFMT_CENTER;
+			break;
+
+		case adBSTR:
+		case adChar:
+		case adVarChar:
+		case adLongVarChar:
+		case adWChar:
+		case adVarWChar:
+		case adLongVarWChar:
+		case adBinary:
+		case adVarBinary:
+		case adLongVarBinary:
+		case adChapter:
+		case adPropVariant:
+		case adVarNumeric:
+		case adArray:
+			iFmt = LVCFMT_LEFT;
+			break;
+	}
+
+	return iFmt;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	07/02/2007 07:27:19
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+HRESULT CDatabaseHandler::PopulateListCtrl(
+										const CString & strSQL
+										, CListCtrl & rList
+										, const bool bClearFirst
+									)
+{
+	HRESULT hr = S_OK;
+
+	CWaitCursor wait;
+
+	rList.DeleteAllItems();
+	rList.LockWindowUpdate();
+
+
+	CComPtr<ADODB::_Recordset> spRst = 0;
+
+	try{
+		THR( hr = OpenRecordSet(strSQL, spRst) );
+
+		while(!spRst->BOF && !spRst->EndOfFile){
+
+
+			THR( hr = AddListRow(spRst, rList) );
+
+			THR( hr = spRst->MoveNext() );
+		}
+	}
+	//----------------------------------------------------------
+	catch(_com_error & e){
+		hr = e.Error();
+		HandleHR(hr, _T("CDatabaseHandler::PopulateListCtrl"), _T(""));
+	}
+
+	rList.UnlockWindowUpdate();
+
+	return hr;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	07/02/2007 07:57:23
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+HRESULT CDatabaseHandler::AddListRow(const CComPtr<ADODB::_Recordset> & spRst, CListCtrl & rList)
+{
+	HRESULT hr = S_OK;
+
+	CComPtr<ADODB::Fields>	spFieldColl		= 0;
+	CComPtr<ADODB::Field>	spField			= 0;
+
+	int iCur = rList.GetItemCount();
+	int iNew = rList.InsertItem(iCur, _T("dummy"));
+
+	try{
+		spFieldColl = spRst->Fields;
+
+		const long iFLD_COUNT = spFieldColl->Count;
+
+		for(long iFld = 0 ; iFld < iFLD_COUNT ; iFld++){
+
+			spField = spFieldColl->Item[iFld];
+
+			THR( hr = SetListCellText(iNew, iFld, spField, rList) );
+		}
+
+		rList.SetItemData(iNew, iNew);
+	}
+	//----------------------------------------------------------
+	catch(_com_error & e){
+		hr = e.Error();
+		HandleHR(hr, _T("CDatabaseHandler::AddListRow"), _T(""));
+	}
+
+	return hr;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	07/02/2007 08:00:24
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+HRESULT CDatabaseHandler::SetListCellText(
+										const int iItem
+										, const int iSubItem
+										, const CComPtr<ADODB::Field> & spField
+										, CListCtrl & rList
+									)
+{
+	HRESULT hr = S_OK;
+
+	try{
+		CComVariant varValue = spField->Value;
+
+		rList.SetItemText(
+						iItem
+						, iSubItem
+						, XLateFieldText(varValue)
+					);
+	}
+	//----------------------------------------------------------
+	catch(_com_error & e){
+		hr = e.Error();
+		HandleHR(hr, _T("CDatabaseHandler::SetListCellText"), _T(""));
+	}
+
+	return hr;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	09/02/2007 08:44:51
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+bool CDatabaseHandler::GetListCellText(
+									const int iItem
+									, const CString & strFieldName
+									, CListCtrl & rList
+									, CString & strCellText
+								)
+{
+	bool bOK = false;
+
+	CHeaderCtrl * pHdr = rList.GetHeaderCtrl();
+	ATLASSERT(pHdr && ::IsWindow(pHdr->m_hWnd));
+
+	if(pHdr && ::IsWindow(pHdr->m_hWnd)){
+		
+		CString strColName = GetColHeaderName(strFieldName.AllocSysString());
+		CString strProbe;
+
+		const int iMAX_COLS = pHdr->GetItemCount();
+		const DWORD dwBUFSIZE = 512L;
+
+		TCHAR szBuffer[dwBUFSIZE + 5] = {0};
+
+		HDITEM hditem;
+		::memset(&hditem, 0, sizeof(HDITEM));
+
+		hditem.mask			= HDI_TEXT;
+		hditem.pszText		= szBuffer;
+		hditem.cchTextMax	= dwBUFSIZE;
+
+		for(int iCol = 0 ; iCol < iMAX_COLS && !bOK ; iCol++){
+			pHdr->GetItem(iCol, &hditem);
+
+			//may contain (ASC) or (DESC), so trim to length of passed
+			//parameter, and then compare
+			strProbe = szBuffer;
+			strProbe = strProbe.Left(strColName.GetLength());
+
+			if(0 == strColName.CompareNoCase(strProbe)){
+				bOK = true;
+				strCellText = rList.GetItemText(iItem, iCol);
+			}
+		}
+
+		ATLASSERT(bOK);
+	}
+
+	return bOK;
+}
+
+//////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
+/*
+	STAMP:	09/02/2007 08:44:57
+	DESCRIP:	
+	IN:
+	OUT:
+*/
+bool CDatabaseHandler::GetListCellNumber(
+									const int iItem
+									, const CString & strFieldName
+									, CListCtrl & rList
+									, long & iCellText
+								)
+{
+	CString strText;
+
+	bool bOK = GetListCellText(iItem, strFieldName, rList, strText);
+
+	if(bOK){
+		iCellText = _ttol(strText);
+	}
+
+	return bOK;
+}
+

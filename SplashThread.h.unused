@@ -1,0 +1,36 @@
+// SplashThread.h: interface for the CSplashThread class.
+//
+//////////////////////////////////////////////////////////////////////
+
+#if !defined(AFX_SPLASHTHREAD_H__5BE27BC9_9178_4D12_A893_8B487D5E7EE4__INCLUDED_)
+#define AFX_SPLASHTHREAD_H__5BE27BC9_9178_4D12_A893_8B487D5E7EE4__INCLUDED_
+
+#if _MSC_VER > 1000
+#pragma once
+#endif // _MSC_VER > 1000
+
+#include "basicthread3.h"
+using namespace INCLUDE_SERVICES::BASE_THREAD3;
+
+#include "SplashThreadParams.h"
+
+//class CSplashThread  
+//:	public CBasicThread3
+//{
+//public:
+//	CSplashThread();
+//	virtual ~CSplashThread();
+//
+//public:
+//	bool StartSplashThread(const CSplashThreadParams & rParams);
+//	void StopSplashThread(void);
+//
+//private:
+//	CWinThread * m_pUIThread;
+//
+//private:
+//	static DWORD WINAPI TF_SplashThread_Wrapper		(LPVOID lpThreadParameter);
+//	static DWORD		TF_SplashThread_MainLoop	(const CSplashThreadParams & rParams);
+//};
+
+#endif // !defined(AFX_SPLASHTHREAD_H__5BE27BC9_9178_4D12_A893_8B487D5E7EE4__INCLUDED_)

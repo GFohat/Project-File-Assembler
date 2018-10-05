@@ -1,0 +1,38 @@
+Microsoft Developer Studio Workspace File, Format Version 6.00
+# WARNING: DO NOT EDIT OR DELETE THIS WORKSPACE FILE!
+
+###############################################################################
+
+Project: "Project File Assembler"=".\Project File Assembler.dsp" - Package Owner=<4>
+
+Package=<5>
+{{{
+    begin source code control
+    "$/WinLINK/Develop/Project File Assembler", JPIOAAAA
+    .
+    end source code control
+}}}
+
+Package=<4>
+{{{
+}}}
+
+###############################################################################
+
+Global:
+
+Package=<5>
+{{{
+    begin source code control
+    "$/WinLINK/Develop/Project File Assembler", JPIOAAAA
+    .
+    end source code control
+}}}
+
+Package=<3>
+{{{
+    {FE10BF68-B99D-4982-A1EC-067C00FFDDA2}
+}}}
+
+###############################################################################
+

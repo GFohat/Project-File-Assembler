@@ -1,0 +1,24 @@
+// SplashThreadParams.h: interface for the CSplashThreadParams class.
+//
+//////////////////////////////////////////////////////////////////////
+
+#if !defined(AFX_SPLASHTHREADPARAMS_H__FC260318_062D_4545_AE33_028C33C91E26__INCLUDED_)
+#define AFX_SPLASHTHREADPARAMS_H__FC260318_062D_4545_AE33_028C33C91E26__INCLUDED_
+
+#if _MSC_VER > 1000
+#pragma once
+#endif // _MSC_VER > 1000
+
+class CSplashThreadParams  
+{
+public:
+	CSplashThreadParams();
+	CSplashThreadParams(const CSplashThreadParams & src){ *this = src; }
+	virtual ~CSplashThreadParams();
+
+public:
+	const CSplashThreadParams & operator = (const CSplashThreadParams & src);
+
+};
+
+#endif // !defined(AFX_SPLASHTHREADPARAMS_H__FC260318_062D_4545_AE33_028C33C91E26__INCLUDED_)

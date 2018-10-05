@@ -1,0 +1,376 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project DefaultTargets="Build" ToolsVersion="15.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup Label="ProjectConfigurations">
+    <ProjectConfiguration Include="Debug|Win32">
+      <Configuration>Debug</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+    <ProjectConfiguration Include="Release|Win32">
+      <Configuration>Release</Configuration>
+      <Platform>Win32</Platform>
+    </ProjectConfiguration>
+  </ItemGroup>
+  <PropertyGroup Label="Globals">
+    <SccProjectName>"$/WinLINK/Develop/Project File Assembler", JPIOAAAA</SccProjectName>
+    <SccLocalPath>.</SccLocalPath>
+    <Keyword>MFCProj</Keyword>
+    <ProjectGuid>{FDDEA062-B38A-4F5A-99B7-FD5F3F135F46}</ProjectGuid>
+    <WindowsTargetPlatformVersion>8.1</WindowsTargetPlatformVersion>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="Configuration">
+    <ConfigurationType>Application</ConfigurationType>
+    <PlatformToolset>v141</PlatformToolset>
+    <UseOfMfc>Static</UseOfMfc>
+    <CharacterSet>Unicode</CharacterSet>
+  </PropertyGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.props" />
+  <ImportGroup Label="ExtensionSettings">
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <ImportGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'" Label="PropertySheets">
+    <Import Project="$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props" Condition="exists('$(UserRootDir)\Microsoft.Cpp.$(Platform).user.props')" Label="LocalAppDataPlatform" />
+    <Import Project="$(VCTargetsPath)Microsoft.Cpp.UpgradeFromVC60.props" />
+  </ImportGroup>
+  <PropertyGroup Label="UserMacros" />
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <OutDir>.\Release\</OutDir>
+    <IntDir>.\Release\</IntDir>
+    <LinkIncremental>false</LinkIncremental>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <OutDir>.\Debug\</OutDir>
+    <IntDir>.\Debug\</IntDir>
+    <LinkIncremental>true</LinkIncremental>
+    <CodeAnalysisRuleSet>MinimumRecommendedRules.ruleset</CodeAnalysisRuleSet>
+    <CodeAnalysisRules />
+    <CodeAnalysisRuleAssemblies />
+  </PropertyGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreaded</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level4</WarningLevel>
+      <PreprocessorDefinitions>WIN32;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Release\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Release\Project File Assembler.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ObjectFileName>.\Release\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Release\</ProgramDataBaseFileName>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Release\Project File Assembler.tlb</TypeLibraryName>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0809</Culture>
+      <PreprocessorDefinitions>NDEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Release\Project File Assembler.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>.\Release\Project File Assembler.exe</OutputFile>
+      <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+    <ClCompile>
+      <RuntimeLibrary>MultiThreadedDebug</RuntimeLibrary>
+      <InlineFunctionExpansion>Default</InlineFunctionExpansion>
+      <FunctionLevelLinking>true</FunctionLevelLinking>
+      <Optimization>Disabled</Optimization>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <WarningLevel>Level4</WarningLevel>
+      <MinimalRebuild>true</MinimalRebuild>
+      <DebugInformationFormat>EditAndContinue</DebugInformationFormat>
+      <PreprocessorDefinitions>WIN32;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <AssemblerListingLocation>.\Debug\</AssemblerListingLocation>
+      <BrowseInformation>true</BrowseInformation>
+      <PrecompiledHeaderOutputFile>.\Debug\Project File Assembler.pch</PrecompiledHeaderOutputFile>
+      <PrecompiledHeader>Use</PrecompiledHeader>
+      <PrecompiledHeaderFile>stdafx.h</PrecompiledHeaderFile>
+      <ObjectFileName>.\Debug\</ObjectFileName>
+      <ProgramDataBaseFileName>.\Debug\</ProgramDataBaseFileName>
+      <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+    </ClCompile>
+    <Midl>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <TypeLibraryName>.\Debug\Project File Assembler.tlb</TypeLibraryName>
+      <TargetEnvironment>Win32</TargetEnvironment>
+    </Midl>
+    <ResourceCompile>
+      <Culture>0x0809</Culture>
+      <PreprocessorDefinitions>_DEBUG;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+    </ResourceCompile>
+    <Bscmake>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <OutputFile>.\Debug\Project File Assembler.bsc</OutputFile>
+    </Bscmake>
+    <Link>
+      <SuppressStartupBanner>true</SuppressStartupBanner>
+      <GenerateDebugInformation>true</GenerateDebugInformation>
+      <SubSystem>Windows</SubSystem>
+      <OutputFile>.\Debug\Project File Assembler.exe</OutputFile>
+      <AdditionalDependencies>version.lib;%(AdditionalDependencies)</AdditionalDependencies>
+    </Link>
+  </ItemDefinitionGroup>
+  <ItemGroup>
+    <ClCompile Include="axsimpledatagrid.cpp" />
+    <ClCompile Include="BasicThread3.cpp" />
+    <ClCompile Include="BasicThread3StartParams.cpp" />
+    <ClCompile Include="BrushHolder.cpp" />
+    <ClCompile Include="BuildListing.cpp" />
+    <ClCompile Include="BuildReporter.cpp" />
+    <ClCompile Include="ButtonIcon.cpp" />
+    <ClCompile Include="ComboListItem.cpp" />
+    <ClCompile Include="CompareHelp.cpp" />
+    <ClCompile Include="ControlPopulator.cpp" />
+    <ClCompile Include="CopyHelper.cpp" />
+    <ClCompile Include="CsvHelper.cpp" />
+    <ClCompile Include="DataSourceInfoHolder.cpp" />
+    <ClCompile Include="DebugTimer.cpp" />
+    <ClCompile Include="DirBrowser.cpp" />
+    <ClCompile Include="DirInitHandler.cpp" />
+    <ClCompile Include="DlgAddFiles.cpp" />
+    <ClCompile Include="DlgInputBox.cpp" />
+    <ClCompile Include="DlgOpenAProject.cpp" />
+    <ClCompile Include="DlgQuickHelp.cpp" />
+    <ClCompile Include="DlgSplash.cpp" />
+    <ClCompile Include="EditListItem.cpp" />
+    <ClCompile Include="FileCopyReport.cpp" />
+    <ClCompile Include="FileCopyThread.cpp" />
+    <ClCompile Include="FileCopyThreadParams.cpp" />
+    <ClCompile Include="FileInfoStrings.cpp" />
+    <ClCompile Include="FileListItemData.cpp" />
+    <ClCompile Include="FileListSortParams.cpp" />
+    <ClCompile Include="FileMetaData.cpp" />
+    <ClCompile Include="FixedFileInfo.cpp" />
+    <ClCompile Include="FontHandler.cpp" />
+    <ClCompile Include="ListCacheItem.cpp" />
+    <ClCompile Include="ListCacheItemHolder.cpp" />
+    <ClCompile Include="ListColumnData.cpp" />
+    <ClCompile Include="ListColumnsHelper.cpp" />
+    <ClCompile Include="ListGeneralFiles.cpp" />
+    <ClCompile Include="ListSorter.cpp" />
+    <ClCompile Include="ListSortParams.cpp" />
+    <ClCompile Include="ListTickSetter.cpp" />
+    <ClCompile Include="LocalProps.cpp" />
+    <ClCompile Include="LogEntryData.cpp" />
+    <ClCompile Include="OleDbErrorHandler.cpp" />
+    <ClCompile Include="PageBatFiles.cpp" />
+    <ClCompile Include="PageData.cpp" />
+    <ClCompile Include="PageDataProps.cpp" />
+    <ClCompile Include="PageInstallShield.cpp" />
+    <ClCompile Include="PageLogging.cpp" />
+    <ClCompile Include="PageLoggingOwnerData.cpp" />
+    <ClCompile Include="PageOptions.cpp" />
+    <ClCompile Include="PagePfaData.cpp" />
+    <ClCompile Include="PageStepDetails.cpp" />
+    <ClCompile Include="PageStepType.cpp" />
+    <ClCompile Include="ParamsCopyProgress.cpp" />
+    <ClCompile Include="ParamsShowFilePCPosition.cpp" />
+    <ClCompile Include="PfaArchiveHandler.cpp" />
+    <ClCompile Include="PfaDataListItem.cpp" />
+    <ClCompile Include="PfaMainSheet.cpp" />
+    <ClCompile Include="PfaStep.cpp" />
+    <ClCompile Include="PfaStepHolder.cpp" />
+    <ClCompile Include="PictureHelper.cpp" />
+    <ClCompile Include="Pipes\NamedPipeClient.cpp" />
+    <ClCompile Include="Pipes\PipeServerInstanceThreadParams.cpp" />
+    <ClCompile Include="Pipes\PipeServerThread.cpp" />
+    <ClCompile Include="Pipes\PipeServerThreadParams.cpp" />
+    <ClCompile Include="Project File Assembler.cpp" />
+    <ClCompile Include="Project File AssemblerDlg.cpp" />
+    <ClCompile Include="PropSheetCommon.cpp" />
+    <ClCompile Include="ReportHelper.cpp" />
+    <ClCompile Include="SheetStepProperties.cpp" />
+    <ClCompile Include="SplashThreadUI.cpp" />
+    <ClCompile Include="StdAfx.cpp">
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">stdafx.h</PrecompiledHeaderFile>
+      <PrecompiledHeader Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Create</PrecompiledHeader>
+      <PrecompiledHeaderFile Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">stdafx.h</PrecompiledHeaderFile>
+    </ClCompile>
+    <ClCompile Include="SystemTime2.cpp" />
+    <ClCompile Include="XLateFieldText.cpp" />
+  </ItemGroup>
+  <ItemGroup>
+    <ResourceCompile Include="Project File Assembler.rc">
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(OUTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(OUTDIR);%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ResourceCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <Midl Include="ProjectFileAssembler.idl">
+      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ProjectFileAssembler_i.h</HeaderFileName>
+      <InterfaceIdentifierFileName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">ProjectFileAssembler_i.c</InterfaceIdentifierFileName>
+      <GenerateStublessProxies Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</GenerateStublessProxies>
+      <TargetEnvironment Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">Win32</TargetEnvironment>
+      <HeaderFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ProjectFileAssembler_i.h</HeaderFileName>
+      <InterfaceIdentifierFileName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">ProjectFileAssembler_i.c</InterfaceIdentifierFileName>
+      <GenerateStublessProxies Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</GenerateStublessProxies>
+      <TargetEnvironment Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">Win32</TargetEnvironment>
+    </Midl>
+  </ItemGroup>
+  <ItemGroup>
+    <ClInclude Include="axsimpledatagrid.h" />
+    <ClInclude Include="BasicThread3.h" />
+    <ClInclude Include="BasicThread3StartParams.h" />
+    <ClInclude Include="BrushHolder.h" />
+    <ClInclude Include="BuildListing.h" />
+    <ClInclude Include="BuildReporter.h" />
+    <ClInclude Include="ButtonIcon.h" />
+    <ClInclude Include="ComboListItem.h" />
+    <ClInclude Include="CompareHelp.h" />
+    <ClInclude Include="ConsBatFiles.h" />
+    <ClInclude Include="ConstAppearance.h" />
+    <ClInclude Include="ConstColours.h" />
+    <ClInclude Include="ConstCompareResult.h" />
+    <ClInclude Include="ConstCsvSetup.h" />
+    <ClInclude Include="ConstDatasourceProps.h" />
+    <ClInclude Include="ConstDynamicCtrlIDs.h" />
+    <ClInclude Include="ConstEventTypes.h" />
+    <ClInclude Include="ConstGlobals.h" />
+    <ClInclude Include="ConstInstallShield.h" />
+    <ClInclude Include="ConstLists.h" />
+    <ClInclude Include="ConstMenus.h" />
+    <ClInclude Include="ConstMsgs.h" />
+    <ClInclude Include="ConstOptions.h" />
+    <ClInclude Include="ConstReport.h" />
+    <ClInclude Include="ConstSQL.h" />
+    <ClInclude Include="ConstStepDetails.h" />
+    <ClInclude Include="ConstStepStatus.h" />
+    <ClInclude Include="ConstStepTypes.h" />
+    <ClInclude Include="ConstTokens.h" />
+    <ClInclude Include="ConstUDL.h" />
+    <ClInclude Include="ControlPopulator.h" />
+    <ClInclude Include="CopyHelper.h" />
+    <ClInclude Include="csafe.h" />
+    <ClInclude Include="CsvHelper.h" />
+    <ClInclude Include="DataSourceInfoHolder.h" />
+    <ClInclude Include="DebugTimer.h" />
+    <ClInclude Include="DirBrowser.h" />
+    <ClInclude Include="DirInitHandler.h" />
+    <ClInclude Include="DlgAddFiles.h" />
+    <ClInclude Include="DlgInputBox.h" />
+    <ClInclude Include="DlgOpenAProject.h" />
+    <ClInclude Include="DlgQuickHelp.h" />
+    <ClInclude Include="DlgSplash.h" />
+    <ClInclude Include="EditListItem.h" />
+    <ClInclude Include="FileCopyReport.h" />
+    <ClInclude Include="FileCopyThread.h" />
+    <ClInclude Include="FileCopyThreadParams.h" />
+    <ClInclude Include="FileInfoStrings.h" />
+    <ClInclude Include="FileListItemData.h" />
+    <ClInclude Include="FileListSortParams.h" />
+    <ClInclude Include="FileMetaData.h" />
+    <ClInclude Include="FixedFileInfo.h" />
+    <ClInclude Include="FontHandler.h" />
+    <ClInclude Include="ImportADO.h" />
+    <ClInclude Include="ListCacheItem.h" />
+    <ClInclude Include="ListCacheItemHolder.h" />
+    <ClInclude Include="ListColumnData.h" />
+    <ClInclude Include="ListColumnsHelper.h" />
+    <ClInclude Include="ListGeneralFiles.h" />
+    <ClInclude Include="ListSorter.h" />
+    <ClInclude Include="ListSortParams.h" />
+    <ClInclude Include="ListTickSetter.h" />
+    <ClInclude Include="LocalProps.h" />
+    <ClInclude Include="LogEntryData.h" />
+    <ClInclude Include="OleDbErrorHandler.h" />
+    <ClInclude Include="PageBatFiles.h" />
+    <ClInclude Include="PageData.h" />
+    <ClInclude Include="PageDataProps.h" />
+    <ClInclude Include="PageInstallShield.h" />
+    <ClInclude Include="PageLogging.h" />
+    <ClInclude Include="PageLoggingOwnerData.h" />
+    <ClInclude Include="PageOptions.h" />
+    <ClInclude Include="PagePfaData.h" />
+    <ClInclude Include="PageStepDetails.h" />
+    <ClInclude Include="PageStepType.h" />
+    <ClInclude Include="ParamsCopyProgress.h" />
+    <ClInclude Include="ParamsShowFilePCPosition.h" />
+    <ClInclude Include="PfaArchiveHandler.h" />
+    <ClInclude Include="PfaDataListItem.h" />
+    <ClInclude Include="PfaMainSheet.h" />
+    <ClInclude Include="PfaStep.h" />
+    <ClInclude Include="PfaStepHolder.h" />
+    <ClInclude Include="PictureHelper.h" />
+    <ClInclude Include="Pipes\ConstPipe.h" />
+    <ClInclude Include="Pipes\ConstPipeMsgs.h" />
+    <ClInclude Include="Pipes\NamedPipeClient.h" />
+    <ClInclude Include="Pipes\PipeServerInstanceThreadParams.h" />
+    <ClInclude Include="Pipes\PipeServerThread.h" />
+    <ClInclude Include="Pipes\PipeServerThreadParams.h" />
+    <ClInclude Include="Project File Assembler.h" />
+    <ClInclude Include="Project File AssemblerDlg.h" />
+    <ClInclude Include="PropSheetCommon.h" />
+    <ClInclude Include="ReportHelper.h" />
+    <ClInclude Include="Resource.h" />
+    <ClInclude Include="SheetStepProperties.h" />
+    <ClInclude Include="SplashThreadUI.h" />
+    <ClInclude Include="StdAfx.h" />
+    <ClInclude Include="SystemTime2.h" />
+    <ClInclude Include="tblLogging.H" />
+    <ClInclude Include="THR.h" />
+    <CustomBuild Include="VersionNo.h">
+      <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">
+      </Outputs>
+      <Command Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Command>
+      <Outputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
+      </Outputs>
+    </CustomBuild>
+    <ClInclude Include="XLateFieldText.h" />
+  </ItemGroup>
+  <ItemGroup>
+    <Image Include="Graphics\aah logo - banner 2.bmp" />
+    <Image Include="Graphics\bitmap3.bmp" />
+    <Image Include="RES\bitmap1.bmp" />
+    <Image Include="RES\bitmap2.bmp" />
+    <Image Include="RES\icon_failure.ico" />
+    <Image Include="RES\icon_success.ico" />
+    <Image Include="RES\icon_warning.ico" />
+    <Image Include="res\Project File Assembler.ico" />
+  </ItemGroup>
+  <ItemGroup>
+    <CustomBuild Include="Database\Project File Assembler.mdb" />
+    <CustomBuild Include="Debug\msado15.tlh" />
+    <CustomBuild Include="Debug\msado15.tli" />
+    <CustomBuild Include="Documentation\Project File Assembler II.doc" />
+    <CustomBuild Include="Project File Assembler.rgs" />
+    <CustomBuild Include="res\Project File Assembler.rc2" />
+  </ItemGroup>
+  <ItemGroup>
+    <Text Include="ReadMe.txt" />
+  </ItemGroup>
+  <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
+  <ImportGroup Label="ExtensionTargets">
+  </ImportGroup>
+</Project>
